@@ -1,8 +1,10 @@
+// src/pages/Today.tsx
 import React, { useEffect, useState } from 'react';
 import { collection, addDoc, getDocs } from 'firebase/firestore';
-import { db } from '../firebaseConfig';
+import { db } from '../../firebaseConfig';
 import styles from './Today.module.css';
-import NewTaskModal from '../components/NewTaskModal/NewTaskModal';
+import NewTaskModal from '../../components/NewTaskModal/NewTaskModal';
+import { useAuth } from '../../context/AuthContext';
 
 interface Task {
   id: string;
@@ -17,6 +19,7 @@ const TodayPage: React.FC = () => {
   const [newTaskDescription, setNewTaskDescription] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isTypingAnimationVisible, setIsTypingAnimationVisible] = useState(false);
+  const { currentUser, logout } = useAuth();
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -63,9 +66,14 @@ const TodayPage: React.FC = () => {
     setIsModalOpen(true);
   };
 
+  const handleLogout = () => {
+    logout();
+  };
+
   return (
     <div className={styles.todayPage}>
-      <h1>Today's Tasks</h1>
+      <h1>Welcome, {currentUser?.email}</h1>
+      <button onClick={handleLogout} className={styles.logoutButton}>Sign Out</button>
       <ul className={styles.taskList}>
         {tasks.map(task => (
           <li key={task.id} className={styles.taskItem}>
