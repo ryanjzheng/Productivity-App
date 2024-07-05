@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import styles from './Today.module.css';
 import NewTaskModal from '../components/NewTaskModal/NewTaskModal';
@@ -16,8 +16,6 @@ const TodayPage: React.FC = () => {
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [newTaskDescription, setNewTaskDescription] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [currentTaskId, setCurrentTaskId] = useState<string | null>(null);
   const [isTypingAnimationVisible, setIsTypingAnimationVisible] = useState(false);
 
   useEffect(() => {
@@ -45,54 +43,24 @@ const TodayPage: React.FC = () => {
   }, []);
 
   const handleAddTask = async () => {
-    if (isEditing && currentTaskId) {
-      // Update the existing task
-      const taskDocRef = doc(db, 'tasks', currentTaskId);
-      try {
-        await updateDoc(taskDocRef, {
-          title: newTaskTitle,
-          description: newTaskDescription,
-        });
-        setTasks(tasks.map(task => (task.id === currentTaskId ? { ...task, title: newTaskTitle, description: newTaskDescription } : task)));
-        setIsEditing(false);
-        setCurrentTaskId(null);
-      } catch (e) {
-        console.error('Error updating document: ', e);
-      }
-    } else {
-      // Add a new task
-      const newTask = {
-        title: newTaskTitle,
-        description: newTaskDescription,
-        completed: false,
-      };
-      try {
-        const docRef = await addDoc(collection(db, 'tasks'), newTask);
-        setTasks([...tasks, { id: docRef.id, ...newTask }]);
-      } catch (e) {
-        console.error('Error adding document: ', e);
-      }
-    }
-    setNewTaskTitle('');
-    setNewTaskDescription('');
-    setIsModalOpen(false);
-  };
-
-  const handleEditTask = (task: Task) => {
-    setIsEditing(true);
-    setCurrentTaskId(task.id);
-    setNewTaskTitle(task.title);
-    setNewTaskDescription(task.description);
-    setIsModalOpen(true);
-  };
-
-  const handleDeleteTask = async (taskId: string) => {
+    const newTask = {
+      title: newTaskTitle,
+      description: newTaskDescription,
+      completed: false,
+    };
     try {
-      await deleteDoc(doc(db, 'tasks', taskId));
-      setTasks(tasks.filter(task => task.id !== taskId));
+      const docRef = await addDoc(collection(db, 'tasks'), newTask);
+      setTasks([...tasks, { id: docRef.id, ...newTask }]);
+      setNewTaskTitle('');
+      setNewTaskDescription('');
+      setIsModalOpen(false);
     } catch (e) {
-      console.error('Error deleting document: ', e);
+      console.error('Error adding document: ', e);
     }
+  };
+
+  const openModalToAddTask = () => {
+    setIsModalOpen(true);
   };
 
   return (
@@ -103,11 +71,12 @@ const TodayPage: React.FC = () => {
           <li key={task.id} className={styles.taskItem}>
             <h2>{task.title}</h2>
             <p>{task.description}</p>
-            <button onClick={() => handleEditTask(task)}>Edit</button>
-            <button onClick={() => handleDeleteTask(task.id)}>Delete</button>
           </li>
         ))}
       </ul>
+      <button onClick={openModalToAddTask} className={styles.addButton}>
+        babe press to add
+      </button>
       <NewTaskModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -119,7 +88,7 @@ const TodayPage: React.FC = () => {
       />
       {isTypingAnimationVisible && (
         <div className={styles.typing}>
-          press t to create a new task
+          press 't' to create a new task
         </div>
       )}
     </div>
