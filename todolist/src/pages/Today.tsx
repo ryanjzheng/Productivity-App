@@ -75,7 +75,7 @@ const TodayPage: React.FC = () => {
         ))}
       </ul>
       <button onClick={openModalToAddTask} className={styles.addButton}>
-        babe press to add
+        Add Tasks
       </button>
       <NewTaskModal
         isOpen={isModalOpen}
