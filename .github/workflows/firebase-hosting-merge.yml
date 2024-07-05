@@ -27,3 +27,4 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TODAY_AND_TOMORROW_C40EF }}
           channelId: live
           projectId: today-and-tomorrow-c40ef
+          entryPoint: todolist  # Specify the directory where firebase.json is located
