@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { collection, addDoc, getDocs } from 'firebase/firestore';
 import { db } from '../../firebaseConfig';
 import styles from './Today.module.css';
-import NewTaskModal from '../../components/NewTaskModal/NewTaskModal';
 import { useAuth } from '../../context/AuthContext';
 
 interface Task {
@@ -85,15 +84,7 @@ const TodayPage: React.FC = () => {
       <button onClick={openModalToAddTask} className={styles.addButton}>
         Add Tasks
       </button>
-      <NewTaskModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onAddTask={handleAddTask}
-        newTaskTitle={newTaskTitle}
-        setNewTaskTitle={setNewTaskTitle}
-        newTaskDescription={newTaskDescription}
-        setNewTaskDescription={setNewTaskDescription}
-      />
+
       {isTypingAnimationVisible && (
         <div className={styles.typing}>
           press 't' to create a new task

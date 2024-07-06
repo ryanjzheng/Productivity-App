@@ -1,0 +1,28 @@
+.toggleButton {
+  position: fixed;
+  top: 1.5rem;
+  left: 1rem;
+  z-index: 1100; /* Ensure this is higher than the sidebar's z-index */
+  border-radius: 8px; /* Make the corners rounded */
+  background-color: transparent; /* Set background to transparent */
+  border: none; /* Remove border */
+  box-shadow: none; /* Remove box-shadow */
+  color: #939ea9; /* Customize the icon color */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer; /* Add pointer cursor */
+  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.toggleButton:hover,
+.toggleButton:focus,
+.toggleButton:active {
+  background-color: rgb(43, 43, 43); /* Change background color on hover, focus, and active */
+  box-shadow: none; /* Remove box-shadow on hover, focus, and active */
+  outline: none; /* Remove outline */
+}
+
+.icon {
+  font-size: 1.5rem; /* Adjust the font-size as needed */
+}

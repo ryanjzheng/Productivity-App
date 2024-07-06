@@ -1,84 +1,54 @@
 import React from 'react';
-import { Link, Outlet } from 'react-router-dom';
-import {
-  MDBContainer,
-  MDBRow,
-  MDBCol,
-  MDBIcon,
-  MDBTooltip,
-  MDBDropdown,
-  MDBDropdownToggle,
-  MDBDropdownMenu,
-  MDBDropdownItem,
-} from 'mdb-react-ui-kit';
-import styles from './Navbar.module.css';
+import { MDBContainer, MDBNavbar, MDBNavbarNav, MDBNavbarItem, MDBNavbarLink, MDBIcon } from 'mdb-react-ui-kit';
+import { useAuth } from '../../context/AuthContext';
+import styles from './SideNavbar.module.css';
 
-const Navbar: React.FC = () => {
+interface SideNavbarProps {
+  isOpen: boolean;
+  toggleNavbar: () => void;
+}
+
+const SideNavbar: React.FC<SideNavbarProps> = ({ isOpen }) => {
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+  };
+
   return (
-    <MDBContainer fluid className={styles.containerFluid}>
-      <MDBRow>
-        <MDBCol sm="auto" className={`bg-light sticky-top ${styles.bgLight} ${styles.stickyTop}`}>
-          <div className={`d-flex flex-sm-column flex-row flex-nowrap bg-light align-items-center sticky-top ${styles.bgLight} ${styles.stickyTop}`}>
-            <Link to="/" className={`d-block p-3 link-dark text-decoration-none ${styles.linkDark} ${styles.textDecorationNone}`} title="Home">
-              <MDBIcon fas icon="home" size="2x" />
-            </Link>
-            <ul className={`nav nav-pills nav-flush flex-sm-column flex-row flex-nowrap mb-auto mx-auto text-center justify-content-between w-100 px-3 align-items-center ${styles.navPills}`}>
-              <li className="nav-item">
-                <MDBTooltip tag="span" title="Today" placement="right">
-                  <Link to="/today" className={`nav-link py-3 px-2 ${styles.navLink}`}>
-                    <MDBIcon fas icon="calendar-day" size="2x" />
-                  </Link>
-                </MDBTooltip>
-              </li>
-              <li>
-                <MDBTooltip tag="span" title="Dashboard" placement="right">
-                  <a href="#" className={`nav-link py-3 px-2 ${styles.navLink}`}>
-                    <MDBIcon fas icon="tachometer-alt" size="2x" />
-                  </a>
-                </MDBTooltip>
-              </li>
-              <li>
-                <MDBTooltip tag="span" title="Orders" placement="right">
-                  <a href="#" className={`nav-link py-3 px-2 ${styles.navLink}`}>
-                    <MDBIcon fas icon="table" size="2x" />
-                  </a>
-                </MDBTooltip>
-              </li>
-              <li>
-                <MDBTooltip tag="span" title="Products" placement="right">
-                  <a href="#" className={`nav-link py-3 px-2 ${styles.navLink}`}>
-                    <MDBIcon fas icon="heart" size="2x" />
-                  </a>
-                </MDBTooltip>
-              </li>
-              <li>
-                <MDBTooltip tag="span" title="Customers" placement="right">
-                  <a href="#" className={`nav-link py-3 px-2 ${styles.navLink}`}>
-                    <MDBIcon fas icon="users" size="2x" />
-                  </a>
-                </MDBTooltip>
-              </li>
-            </ul>
-            <MDBDropdown className="d-flex align-items-center justify-content-center p-3">
-              <MDBDropdownToggle tag="a" className={`link-dark text-decoration-none ${styles.linkDark} ${styles.textDecorationNone}`} role="button">
-                <MDBIcon fas icon="user-circle" size="2x" />
-              </MDBDropdownToggle>
-              <MDBDropdownMenu>
-                <MDBDropdownItem link>New project...</MDBDropdownItem>
-                <MDBDropdownItem link>Settings</MDBDropdownItem>
-                <MDBDropdownItem link>Profile</MDBDropdownItem>
-                <MDBDropdownItem divider />
-                <MDBDropdownItem link>Sign out</MDBDropdownItem>
-              </MDBDropdownMenu>
-            </MDBDropdown>
-          </div>
-        </MDBCol>
-        <MDBCol sm="p-3 min-vh-100">
-          <Outlet />
-        </MDBCol>
-      </MDBRow>
-    </MDBContainer>
+    <div className={`${styles.sideNavbar} ${isOpen ? styles.open : styles.closed}`}>
+      <MDBNavbar expand="lg" light className={`flex-column vh-100`}>
+        <MDBContainer fluid>
+          <MDBNavbarNav className="flex-column w-100 mt-4">
+            <MDBNavbarItem className="mb-3 mt-4">
+              <MDBNavbarLink href="/today" className={styles.navLink}>
+                <MDBIcon fas icon="home" className="me-2" />
+                Today
+              </MDBNavbarLink>
+            </MDBNavbarItem>
+            <MDBNavbarItem className="mb-3">
+              <MDBNavbarLink href="#" className={styles.navLink}>
+                <MDBIcon fas icon="user" className="me-2" />
+                Profile
+              </MDBNavbarLink>
+            </MDBNavbarItem>
+            <MDBNavbarItem className="mb-3">
+              <MDBNavbarLink href="#" className={styles.navLink}>
+                <MDBIcon fas icon="cog" className="me-2" />
+                Settings
+              </MDBNavbarLink>
+            </MDBNavbarItem>
+            <MDBNavbarItem className="mb-3">
+              <MDBNavbarLink href="#" onClick={handleLogout} className={styles.navLink}>
+                <MDBIcon fas icon="power-off" className="me-2" />
+                Logout
+              </MDBNavbarLink>
+            </MDBNavbarItem>
+          </MDBNavbarNav>
+        </MDBContainer>
+      </MDBNavbar>
+    </div>
   );
 };
 
-export default Navbar;
+export default SideNavbar;
