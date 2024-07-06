@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import { MDBInput, MDBBtn } from 'mdb-react-ui-kit';
-import { FaFacebookF, FaTwitter, FaGoogle } from 'react-icons/fa';
+import { FaGoogle } from 'react-icons/fa';
+//FaFacebookF, FaTwitter
 import { Link } from 'react-router-dom';
 import styles from './Login.module.css';
 import { useNavigate } from 'react-router-dom';
@@ -66,14 +67,14 @@ const Login: React.FC = () => {
               className="img-fluid"
               alt="Phone image"
             />
-            {errorMessage && (
-              <div className="mt-3 text-danger text-center">
-                <small>{errorMessage}</small>
-              </div>
-            )}
           </div>
           <div className="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
             <form onSubmit={handleSignIn}>
+              {errorMessage && (
+                <div className="mb-3 mt-3 text-danger text-center">
+                  <small>{errorMessage}</small>
+                </div>
+              )}
               {/* Email input */}
               <div data-mdb-input-init className={`form-outline mb-4 ${styles.formOutline}`}>
                 <MDBInput
@@ -104,7 +105,7 @@ const Login: React.FC = () => {
                 data-mdb-button-init
                 data-mdb-ripple-init
                 className="btn btn-primary btn-lg btn-block"
-                style={{ marginBottom: '1rem' }} 
+                style={{ marginBottom: '1rem' }}
               >
                 Sign in
               </MDBBtn>
@@ -142,7 +143,7 @@ const Login: React.FC = () => {
               >
                 <FaGoogle className="me-2" />Continue with Google
               </MDBBtn>
-              <MDBBtn
+              {/* <MDBBtn
                 data-mdb-ripple-init
                 className="btn btn-primary btn-lg btn-block"
                 style={{ backgroundColor: '#3b5998' }}
@@ -159,7 +160,7 @@ const Login: React.FC = () => {
                 role="button"
               >
                 <FaTwitter className="me-2" />Continue with Twitter
-              </MDBBtn>
+              </MDBBtn> */}
             </form>
           </div>
         </div>

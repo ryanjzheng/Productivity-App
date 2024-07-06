@@ -1,0 +1,37 @@
+
+.sideNavbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 200px;
+  background-color: rgb(21, 20, 20);
+  color: #fff;
+  padding-top: 1rem;
+  z-index: 1000;
+  transition: transform 0.3s ease-in-out;
+}
+
+.sideNavbar.closed {
+  transform: translateX(-100%);
+}
+
+.sideNavbar.open {
+  transform: translateX(0);
+}
+
+.navbarHeader {
+  color: #fff;
+  margin-left: 1rem;
+}
+
+.navLink {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: color 0.3s ease-in-out;
+  margin-left: 0.8rem;
+}
+
+.navLink:hover {
+  color: #adb5bd;
+}
