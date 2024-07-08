@@ -4,7 +4,7 @@
   top: 0;
   left: 0;
   width: 200px;
-  background-color: rgb(21, 20, 20);
+  background-color: var(--navy-color);
   color: #fff;
   padding-top: 1rem;
   z-index: 1000;
@@ -25,7 +25,7 @@
 }
 
 .navLink {
-  color: #fff;
+  color: var(--white-color);
   font-size: 1rem;
   font-weight: 500;
   transition: color 0.3s ease-in-out;

@@ -1,75 +1,64 @@
-// src/pages/Today.tsx
+// TodoList.tsx
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebaseConfig';
-import styles from './Today.module.css';
-import { useAuth } from '../../context/AuthContext';
+import TodoItem from './TodoItem';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
-interface Task {
+interface Todo {
   id: string;
   title: string;
-  description: string;
-  completed: boolean;
+  text: string;
+  order: number;
 }
 
-const TodayPage: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [isTypingAnimationVisible, setIsTypingAnimationVisible] = useState(false);
-  const { currentUser, logout } = useAuth();
+const Today: React.FC = () => {
+  const [todos, setTodos] = useState<Todo[]>([]);
 
   useEffect(() => {
-    const fetchTasks = async () => {
-      const tasksCollection = collection(db, 'tasks');
-      const tasksSnapshot = await getDocs(tasksCollection);
-      const tasksList = tasksSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Task));
-      setTasks(tasksList);
-      setIsTypingAnimationVisible(true); // Trigger the typing animation after tasks are loaded
+    const fetchTodos = async () => {
+      const querySnapshot = await getDocs(collection(db, 'tasks'));
+      const todosData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Todo[];
+      setTodos(todosData.sort((a, b) => a.order - b.order));
     };
-    fetchTasks();
+
+    fetchTodos();
   }, []);
 
+  const moveItem = (dragIndex: number, hoverIndex: number) => {
+    const draggedItem = todos[dragIndex];
+    const updatedTodos = [...todos];
+    updatedTodos.splice(dragIndex, 1);
+    updatedTodos.splice(hoverIndex, 0, draggedItem);
 
-  // const handleAddTask = async () => {
-  //   const newTask = {
-  //     title: newTaskTitle,
-  //     description: newTaskDescription,
-  //     completed: false,
-  //   };
-  //   try {
-  //     const docRef = await addDoc(collection(db, 'tasks'), newTask);
-  //     setTasks([...tasks, { id: docRef.id, ...newTask }]);
-  //     setNewTaskTitle('');
-  //     setNewTaskDescription('');
-  //   } catch (e) {
-  //     console.error('Error adding document: ', e);
-  //   }
-  // };
+    setTodos(updatedTodos);
 
-
-  const handleLogout = () => {
-    logout();
+    updatedTodos.forEach(async (todo, index) => {
+      await updateDoc(doc(db, 'tasks', todo.id), { order: index });
+    });
   };
 
-  return (
-    <div className={styles.todayPage}>
-      <h1>Welcome, {currentUser?.email}</h1>
-      <button onClick={handleLogout} className={styles.logoutButton}>Sign Out</button>
-      <ul className={styles.taskList}>
-        {tasks.map(task => (
-          <li key={task.id} className={styles.taskItem}>
-            <h2>{task.title}</h2>
-            <p>{task.description}</p>
-          </li>
-        ))}
-      </ul>
+  console.log("ryan:", todos);
 
-      {isTypingAnimationVisible && (
-        <div className={styles.typing}>
-          press 't' to create a new task
-        </div>
-      )}
-    </div>
+  return (
+    <DndProvider backend={HTML5Backend}>
+      <div>
+        {todos.map((todo, index) => (
+          <TodoItem
+            key={todo.id}
+            id={todo.id}
+            text={todo.title}
+            index={index}
+            moveItem={moveItem}
+          />
+        ))}
+      </div>
+    </DndProvider>
   );
 };
 
-export default TodayPage;
+export default Today;

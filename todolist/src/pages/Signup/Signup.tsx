@@ -4,6 +4,7 @@ import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import { MDBInput, MDBBtn } from 'mdb-react-ui-kit';
 import { FaGoogle } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styles from '../Login/Login.module.css';
 import { auth, googleProvider } from '../../firebaseConfig';
 import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
@@ -25,6 +26,7 @@ const Signup: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,6 +47,7 @@ const Signup: React.FC = () => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       console.log('Signed up with Google:', result);
+      navigate('/today');
     } catch (error) {
       if (error instanceof FirebaseError) {
         setErrorMessage(getErrorMessage(error));
