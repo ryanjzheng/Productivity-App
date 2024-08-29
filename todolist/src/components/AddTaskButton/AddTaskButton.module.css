@@ -1,0 +1,21 @@
+.toggleButton {
+    position: fixed;
+    top: 1.5rem;
+    left: 3.5rem;
+    z-index: 1100;
+    border-radius: 8px;
+    background-color: transparent; 
+    border: none;
+    box-shadow: none;
+    color: #939ea9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  
+  
+  .icon {
+    font-size: 1.5rem; /* Adjust the font-size as needed */
+  }
+  
