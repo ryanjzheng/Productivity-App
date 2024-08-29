@@ -9,6 +9,8 @@ import styles from '../Login/Login.module.css';
 import { auth, googleProvider } from '../../firebaseConfig';
 import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { FirebaseError } from 'firebase/app';
+import { db } from '../../firebaseConfig';
+import { doc, setDoc, collection } from 'firebase/firestore';
 
 const errorMessages: { [key: string]: string } = {
   'auth/email-already-in-use': 'Email address is already in use.',
@@ -33,7 +35,22 @@ const Signup: React.FC = () => {
     setErrorMessage(''); // Clear previous error message
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const uid = userCredential.user.uid;
+
+      await setDoc(doc(db, 'users', uid), {
+        createdAt: new Date().toISOString(),
+      });
+
+      const userTasksRef = collection(db, 'users', uid, 'tasks');
+      await setDoc(doc(userTasksRef), {
+        title: 'Welcome Task', // Placeholder task document, optional
+        text: 'This is your first task. Edit or delete me!',
+        order: 0,
+      });
+
+
       console.log('Signed up with email and password:', userCredential);
+      navigate('/today');
     } catch (error) {
       if (error instanceof FirebaseError) {
         setErrorMessage(getErrorMessage(error));
@@ -46,6 +63,19 @@ const Signup: React.FC = () => {
     setErrorMessage(''); // Clear previous error message
     try {
       const result = await signInWithPopup(auth, googleProvider);
+      const uid = result.user.uid;
+
+      await setDoc(doc(db, 'users', uid), {
+        createdAt: new Date().toISOString(),
+      });
+
+      const userTasksRef = collection(db, 'users', uid, 'tasks');
+      await setDoc(doc(userTasksRef), {
+        title: 'Welcome Task', // Placeholder task document, optional
+        text: 'This is your first task. Edit or delete me!',
+        order: 0,
+      });
+
       console.log('Signed up with Google:', result);
       navigate('/today');
     } catch (error) {
@@ -60,13 +90,6 @@ const Signup: React.FC = () => {
     <section className={`vh-100 ${styles.signupContainer}`}>
       <div className="container py-5 h-100">
         <div className="row d-flex align-items-center justify-content-center h-100">
-          <div className="col-md-8 col-lg-7 col-xl-6">
-            <img
-              src="https://bootstrapious.com/i/snippets/sn-registeration/illustration.svg"
-              className="img-fluid"
-              alt="Illustration image"
-            />
-          </div>
           <div className="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
             <form onSubmit={handleSignUp}>
               {errorMessage && (
