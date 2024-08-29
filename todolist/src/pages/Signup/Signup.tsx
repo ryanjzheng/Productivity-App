@@ -38,6 +38,7 @@ const Signup: React.FC = () => {
       const uid = userCredential.user.uid;
 
       await setDoc(doc(db, 'users', uid), {
+        email: userCredential.user.email,
         createdAt: new Date().toISOString(),
       });
 
@@ -66,6 +67,7 @@ const Signup: React.FC = () => {
       const uid = result.user.uid;
 
       await setDoc(doc(db, 'users', uid), {
+        email: result.user.email,
         createdAt: new Date().toISOString(),
       });
 

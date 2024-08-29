@@ -2,3 +2,20 @@
 .todayPage {
     padding: 48px;
 }
+
+.taskContainer {
+    display: flex;
+    align-items: center;
+    margin: 16px;
+    padding: 16px;
+    border: 2px solid var(--black-color);
+    border-radius: 16px;
+}
+
+.checkbox {
+    transform: scale(1.1);
+}
+
+.taskContent {
+    padding-left: 12px;
+}
