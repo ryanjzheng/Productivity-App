@@ -7,6 +7,8 @@ import ProtectedRoute from './components/Routing/ProtectedRoute';
 import WildcardRoute from './components/Routing/WildcardRoute';
 import SideNavbar from './components/Navbar/Navbar';
 import ToggleButton from './components/ToggleButton/ToggleButton';
+import MessageHandler from './components/GlobalMessages/MessageHandler';
+import { MessageProvider } from './context/MessageContext';
 import { AuthProvider } from './context/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
@@ -51,9 +53,12 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
   return (
     <AuthProvider>
-      <Router>
-        <AppContent />
-      </Router>
+      <MessageProvider> {/* Wrap your app with the MessageProvider */}
+        <Router>
+          <AppContent />
+          <MessageHandler /> {/* Add the MessageHandler component */}
+        </Router>
+      </MessageProvider>
     </AuthProvider>
   );
 };

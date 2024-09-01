@@ -1,0 +1,61 @@
+.taskContainer {
+    display: flex;
+    margin: 16px;
+    padding: 16px;
+    border: 2px solid var(--black-color);
+    border-radius: 16px;
+    height: 120px;
+    position: relative;
+}
+
+.ryan {
+    display: flex;
+    width: 100%;
+}
+
+.checkbox {
+    transform: scale(1.1);
+    display: block;
+}
+
+.taskContent {
+    padding-left: 12px;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    width: 100%;
+}
+
+.invisibleInput {
+    border: none;
+    background: transparent;
+}
+
+.taskTitleInput {
+    font-weight: bold;
+    font-size: 20px;;
+    color: var(--black-color);
+    width: 100%;
+  }
+
+.taskDescInput {
+    font-size: 14px;
+    color: gray;
+    width: 100%;
+}
+
+.iconRow {
+    position: absolute; 
+    bottom: 0;
+    left: 30px;
+    display: flex; 
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 5px 10px;
+  }
+
+  .customDatePicker {
+    height: 30px; /* Decrease component height */
+    width: 100px;
+    border-color: var(--black-color)
+  }
