@@ -31,7 +31,7 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <div className="App">
+    <div>
       {shouldShowNavbar && (
         <>
           <ToggleButton onClick={toggleSidebar} />
