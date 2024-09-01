@@ -1,8 +1,8 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { FaTrashAlt, FaEdit, FaRegClock } from 'react-icons/fa'; // Example icons
+import { FaTrashAlt, FaEdit, FaRegClock } from 'react-icons/fa';
 import styles from './Task.module.css';
-import { DatePicker, TimePicker } from 'antd'; // Import DatePicker and TimePicker components
-import moment, { Moment } from 'moment'; // Import moment and Moment type
+import { DatePicker, TimePicker } from 'antd';
+import moment, { Moment } from 'moment';
 import dayjs, { Dayjs } from 'dayjs';
 
 interface Todo {
@@ -13,6 +13,7 @@ interface Todo {
     date?: string;
     time?: string;
 }
+
 interface TaskProps {
     todo: Todo;
     onDelete: (taskId: string) => void;
@@ -21,20 +22,18 @@ interface TaskProps {
 }
 
 const Task: React.FC<TaskProps> = ({ todo, onDelete, onSave, onCancel }) => {
-    const [isEditing, setIsEditing] = useState(!todo.id || todo.id.startsWith('temp-')); // Start editing if adding a new task
+    const [isEditing, setIsEditing] = useState(!todo.id || todo.id.startsWith('temp-'));
     const [title, setTitle] = useState(todo.title || '');
     const [text, setText] = useState(todo.text || '');
-    const [date, setDate] = useState(todo.date || '');  // Add state for date
-    // const [displayDate, setDisplayDate] = useState(todo.date ? moment(todo.date).format('dddd') : ''); // State for displaying the formatted date
-    const [time, setTime] = useState(todo.time || '');  // Add state for time
-
+    const [date, setDate] = useState(todo.date || '');
+    const [time, setTime] = useState(todo.time || '');
+    const [hasPendingChanges, setHasPendingChanges] = useState(false);
 
     const titleInputRef = useRef<HTMLInputElement>(null);
     const editingRef = useRef<HTMLDivElement | null>(null);
     const datePickerRef = useRef<HTMLDivElement | null>(null);
     const timePickerRef = useRef<HTMLDivElement | null>(null);
 
-    // Sync local state with props when todo changes
     useEffect(() => {
         setTitle(todo.title || '');
         setText(todo.text || '');
@@ -46,64 +45,48 @@ const Task: React.FC<TaskProps> = ({ todo, onDelete, onSave, onCancel }) => {
         }
     }, [isEditing]);
 
+    useEffect(() => {
+        if (hasPendingChanges && (title.trim() !== '' || text.trim() !== '' || date.trim() !== '' || time.trim() !== '')) {
+            handleSave();
+            setHasPendingChanges(false);
+        }
+    }, [date, time]);
+
     const handleSave = () => {
         if (title.trim() === '' && text.trim() === '' && date.trim() === '' && time.trim() === '') {
-            onCancel(todo.id!); // If all fields are empty, treat it as a cancel
+            handleCancel(); // Cancel if all fields are empty
             return;
         }
-        onSave({ ...todo, title, text, date, time }); // Include date and time
+        onSave({ ...todo, title, text, date, time });
         setIsEditing(false);
     };
 
     const handleCancel = () => {
         setIsEditing(false);
-        setTitle(todo.title || ''); // Reset to original value
-        setText(todo.text || '');   // Reset to original value
-        if (!todo.id || todo.id.startsWith('temp-')) onCancel(todo.id!); // Call onCancel to remove the new task if it's not saved
+        setTitle(todo.title || '');
+        setText(todo.text || '');
+        if (!todo.id || todo.id.startsWith('temp-')) onCancel(todo.id!);
     };
 
     const handleClickOutside = useCallback((e: MouseEvent) => {
-        if (
-            editingRef.current &&
-            !editingRef.current.contains(e.target as Node) &&
-            datePickerRef.current && // Check if the click is not within the DatePicker
-            !datePickerRef.current.contains(e.target as Node) &&
-            timePickerRef.current && // Check if the click is not within the TimePicker
-            !timePickerRef.current.contains(e.target as Node)
-        ) {
-            handleCancel();
+        // Check if the click is outside the editable area, date picker, or time picker
+        if (editingRef.current && !editingRef.current.contains(e.target as Node) &&
+            (!datePickerRef.current || !datePickerRef.current.contains(e.target as Node)) &&
+            (!timePickerRef.current || !timePickerRef.current.contains(e.target as Node))) {
+
+            console.log('Outside click detected');
+
+            // Check if there are any meaningful changes
+            if (title.trim() === '' && text.trim() === '' && date.trim() === '' && time.trim() === '') {
+                console.log('All fields are empty, triggering cancel');
+                handleCancel(); // Cancel if all fields are empty when clicking outside
+            } else {
+                console.log('Changes detected, triggering save');
+                handleSave(); // Save changes if there are any when clicking outside
+            }
         }
-    }, [todo]);
+    }, [title, text, date, time]);
 
-    const handleDateChange = (date: Moment | null) => {
-        if (date) {
-            const formattedDate = date.format('YYYY-MM-DD');
-            setDate(formattedDate);  // Store the date in YYYY-MM-DD format
-            onSave({ ...todo, title, text, date: formattedDate, time });  // Immediately save the change
-        } else {
-            setDate('');
-            onSave({ ...todo, title, text, date: '', time });  // Immediately save the change
-        }
-    };
-
-
-    const handleTimeChange = (time: Dayjs | null) => {
-        if (time) {
-            const formattedTime = time.format('HH:mm');
-            setTime(formattedTime); // Store the time in 'HH:mm' format using dayjs
-            onSave({ ...todo, title, text, date, time: formattedTime });  // Immediately save the change
-        } else {
-            setTime('');
-            onSave({ ...todo, title, text, date, time: '' });  // Immediately save the change
-        }
-    };
-
-
-    useEffect(() => {
-        if (isEditing && titleInputRef.current) {
-            titleInputRef.current.focus();
-        }
-    }, [isEditing]);
 
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
@@ -112,10 +95,28 @@ const Task: React.FC<TaskProps> = ({ todo, onDelete, onSave, onCancel }) => {
         };
     }, [handleClickOutside]);
 
+    const handleDateChange = (date: Moment | null) => {
+        if (date) {
+            const formattedDate = date.format('YYYY-MM-DD');
+            setDate(formattedDate);
+        } else {
+            setDate('');
+        }
+        setHasPendingChanges(true);
+    };
+
+    const handleTimeChange = (time: Dayjs | null) => {
+        if (time) {
+            const formattedTime = time.format('HH:mm');
+            setTime(formattedTime);
+        } else {
+            setTime('');
+        }
+        setHasPendingChanges(true);
+    };
+
     return (
-        <div
-            className={styles.taskContainer}
-        >
+        <div className={styles.taskContainer}>
             <div className={styles.ryan}>
                 {todo.id && (
                     <input
@@ -150,8 +151,6 @@ const Task: React.FC<TaskProps> = ({ todo, onDelete, onSave, onCancel }) => {
                             <FaRegClock className={styles.icon} />
                         </div>
                     </>
-
-
                 ) : (
                     <div onClick={() => setIsEditing(true)} className={styles.taskContent}>
                         <div className={styles.taskTitleInput}>{todo.title}</div>
