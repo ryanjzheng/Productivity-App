@@ -3,3 +3,15 @@
     padding: 48px;
 }
 
+.todayHeader {
+    margin: 16px;
+}
+
+.title {
+    color: var(--text-color);
+    font-size: 36px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin-bottom: 24px;
+}

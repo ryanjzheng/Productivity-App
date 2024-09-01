@@ -131,6 +131,9 @@ const Today: React.FC = () => {
   return (
     <div className={styles.todayPage}>
       <AddTaskButton onClick={handleAddTask} />
+      <div className={styles.todayHeader}>
+        <div className={styles.title}>Today</div>
+      </div>
 
       {todos.length === 0 ? (
         <p>No tasks available.</p>
