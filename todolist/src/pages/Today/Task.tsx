@@ -1,9 +1,9 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { FaTrashAlt, FaEdit, FaRegClock } from 'react-icons/fa';
 import styles from './Task.module.css';
-import { DatePicker, TimePicker } from 'antd';
-import moment, { Moment } from 'moment';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { CustomDateTimePicker, datePickerProps, datePickerSlotProps } from '../../components/CustomDateTimePicker/CustomeDateTimePicker';
 
 interface Todo {
     id?: string;
@@ -25,19 +25,22 @@ const Task: React.FC<TaskProps> = ({ todo, onDelete, onSave, onCancel }) => {
     const [isEditing, setIsEditing] = useState(!todo.id || todo.id.startsWith('temp-'));
     const [title, setTitle] = useState(todo.title || '');
     const [text, setText] = useState(todo.text || '');
-    const [date, setDate] = useState(todo.date || '');
-    const [time, setTime] = useState(todo.time || '');
+    const [date, setDate] = useState(todo.date || dayjs().format('YYYY-MM-DD'));
+    const [time, setTime] = useState(todo.time || dayjs().format('HH:mm'));
     const [hasPendingChanges, setHasPendingChanges] = useState(false);
 
     const titleInputRef = useRef<HTMLInputElement>(null);
     const editingRef = useRef<HTMLDivElement | null>(null);
-    const datePickerRef = useRef<HTMLDivElement | null>(null);
-    const timePickerRef = useRef<HTMLDivElement | null>(null);
 
-    useEffect(() => {
-        setTitle(todo.title || '');
-        setText(todo.text || '');
-    }, [todo]);
+    const [selectedDate, setSelectedDate] = useState(() => {
+        if (todo.date && todo.time) {
+            return dayjs(`${todo.date}T${todo.time}`);
+        } else if (todo.date) {
+            return dayjs(todo.date);
+        } else {
+            return dayjs();
+        }
+    });
 
     useEffect(() => {
         if (isEditing && titleInputRef.current) {
@@ -46,18 +49,22 @@ const Task: React.FC<TaskProps> = ({ todo, onDelete, onSave, onCancel }) => {
     }, [isEditing]);
 
     useEffect(() => {
-        if (hasPendingChanges && (title.trim() !== '' || text.trim() !== '' || date.trim() !== '' || time.trim() !== '')) {
-            handleSave();
+        if (hasPendingChanges) {
+            const hasChanges = title !== todo.title || text !== todo.text || date !== todo.date || time !== todo.time;
+            if (hasChanges) {
+                handleSave();
+            }
             setHasPendingChanges(false);
         }
     }, [date, time]);
 
+
     const handleSave = () => {
-        if (title.trim() === '' && text.trim() === '' && date.trim() === '' && time.trim() === '') {
-            handleCancel(); // Cancel if all fields are empty
-            return;
+        const hasChanges = title !== todo.title || text !== todo.text || date !== todo.date || time !== todo.time;
+    
+        if (hasChanges) {
+            onSave({ ...todo, title, text, date, time });
         }
-        onSave({ ...todo, title, text, date, time });
         setIsEditing(false);
     };
 
@@ -68,25 +75,32 @@ const Task: React.FC<TaskProps> = ({ todo, onDelete, onSave, onCancel }) => {
         if (!todo.id || todo.id.startsWith('temp-')) onCancel(todo.id!);
     };
 
+    const handleDateTimeChange = (newDateValue: dayjs.Dayjs | null) => {
+        if (newDateValue) {
+            const formattedDate = newDateValue.format('YYYY-MM-DD');
+            const formattedTime = newDateValue.format('HH:mm');
+            setDate(formattedDate);
+            setTime(formattedTime);
+
+            setSelectedDate(newDateValue);
+        } else {
+            setDate('');
+            setTime('');
+        }
+        setHasPendingChanges(true);
+    };
+
+
     const handleClickOutside = useCallback((e: MouseEvent) => {
-        // Check if the click is outside the editable area, date picker, or time picker
-        if (editingRef.current && !editingRef.current.contains(e.target as Node) &&
-            (!datePickerRef.current || !datePickerRef.current.contains(e.target as Node)) &&
-            (!timePickerRef.current || !timePickerRef.current.contains(e.target as Node))) {
+        if (editingRef.current && !editingRef.current.contains(e.target as Node)) {
 
-            console.log('Outside click detected');
-
-            // Check if there are any meaningful changes
             if (title.trim() === '' && text.trim() === '' && date.trim() === '' && time.trim() === '') {
-                console.log('All fields are empty, triggering cancel');
-                handleCancel(); // Cancel if all fields are empty when clicking outside
+                handleCancel();
             } else {
-                console.log('Changes detected, triggering save');
-                handleSave(); // Save changes if there are any when clicking outside
+                handleSave();
             }
         }
     }, [title, text, date, time]);
-
 
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
@@ -94,26 +108,6 @@ const Task: React.FC<TaskProps> = ({ todo, onDelete, onSave, onCancel }) => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [handleClickOutside]);
-
-    const handleDateChange = (date: Moment | null) => {
-        if (date) {
-            const formattedDate = date.format('YYYY-MM-DD');
-            setDate(formattedDate);
-        } else {
-            setDate('');
-        }
-        setHasPendingChanges(true);
-    };
-
-    const handleTimeChange = (time: Dayjs | null) => {
-        if (time) {
-            const formattedTime = time.format('HH:mm');
-            setTime(formattedTime);
-        } else {
-            setTime('');
-        }
-        setHasPendingChanges(true);
-    };
 
     return (
         <div className={styles.taskContainer}>
@@ -145,11 +139,6 @@ const Task: React.FC<TaskProps> = ({ todo, onDelete, onSave, onCancel }) => {
                                 onKeyPress={(e) => e.key === 'Enter' && handleSave()}
                             />
                         </div>
-                        <div className={styles.iconRow}>
-                            <FaEdit className={styles.icon} onClick={() => setIsEditing(true)} />
-                            <FaTrashAlt className={styles.icon} onClick={() => onDelete(todo.id!)} />
-                            <FaRegClock className={styles.icon} />
-                        </div>
                     </>
                 ) : (
                     <div onClick={() => setIsEditing(true)} className={styles.taskContent}>
@@ -159,24 +148,14 @@ const Task: React.FC<TaskProps> = ({ todo, onDelete, onSave, onCancel }) => {
                 )}
 
                 <div className={styles.iconRow}>
-                    <div ref={datePickerRef}>
-                        <DatePicker
-                            className={`${styles.customDatePicker}`}
-                            value={date ? moment(date, 'YYYY-MM-DD') : null}
-                            onChange={handleDateChange}
-                            format="dddd"
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <CustomDateTimePicker
+                            {...datePickerProps}
+                            value={selectedDate}
+                            onChange={handleDateTimeChange}
+                            slotProps={datePickerSlotProps}
                         />
-                    </div>
-                    {date && (
-                        <div ref={timePickerRef}>
-                            <TimePicker
-                                className={`${styles.customDatePicker}`}
-                                value={time ? dayjs(time, 'HH:mm') : null}
-                                onChange={handleTimeChange}
-                                format="HH:mm"
-                            />
-                        </div>
-                    )}
+                    </LocalizationProvider>
                 </div>
             </div>
         </div>

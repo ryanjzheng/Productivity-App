@@ -53,12 +53,12 @@ const Today: React.FC = () => {
 
   const handleAddTask = () => {
     const newTask = {
-      id: `temp-${Date.now()}`, // Temporary ID for the new task
+      id: `temp-${Date.now()}`,
       title: '',
       text: '',
       order: todos.length + 1,
-      date: '',  // Initialize date
-      time: '',  // Initialize time
+      date: '',
+      time: '', 
     };
     setTodos(prevTodos => [...prevTodos, newTask]);
   };
@@ -88,14 +88,14 @@ const Today: React.FC = () => {
                 title: task.title,
                 text: task.text,
                 order: task.order,
-                date: task.date, // Include date
-                time: task.time, // Include time
+                date: task.date,
+                time: task.time,
             });
             const updatedTodos = todos.map((todo) =>
                 todo.id === task.id ? { ...task, id: docRef.id } : todo
             );
             setTodos(updatedTodos);
-            handleNotifications(updatedTodos); // Reschedule notifications
+            handleNotifications(updatedTodos);
 
             addMessage('Task Added');
         } else if (task.id) {
@@ -108,8 +108,8 @@ const Today: React.FC = () => {
                 title: task.title,
                 text: task.text,
                 order: task.order,
-                date: task.date, // Include date
-                time: task.time, // Include time
+                date: task.date,
+                time: task.time,
             });
             const updatedTodos = todos.map((todo) => (todo.id === task.id ? task : todo));
             setTodos(updatedTodos);
@@ -140,11 +140,11 @@ const Today: React.FC = () => {
       ) : (
         todos.map((todo) => (
           <Task
-            key={todo.id || Math.random()} // Use Math.random() as key for new tasks without an id
+            key={todo.id || Math.random()}
             todo={todo}
             onDelete={handleDeleteTask}
             onSave={handleSaveTask}
-            onCancel={handleCancelNewTask} // Pass cancel handler
+            onCancel={handleCancelNewTask}
           />
         ))
       )}
