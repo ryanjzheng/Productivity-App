@@ -1,28 +1,9 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import styles from './Task.module.css';
 import dayjs from 'dayjs';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { styled } from '@mui/material/styles';
-
-
-const CustomDateTimePicker = styled(DateTimePicker)({
-    '& .MuiInputBase-root': {
-        color: 'var(--text-color)',
-        width: '215px',
-        height: '35px',
-        backgroundColor: 'var(--background-color)',
-        borderRadius: '16px',
-
-    },
-    '& .MuiOutlinedInput-notchedOutline': {
-        border: 'none',
-    },
-    '& .MuiSvgIcon-root': {
-        color: 'var(--primary)',
-    },
-});
+import { CustomDateTimePicker, datePickerProps, datePickerSlotProps } from '../../components/CustomDateTimePicker/CustomeDateTimePicker';
 
 interface Todo {
     id?: string;
@@ -68,20 +49,22 @@ const Task: React.FC<TaskProps> = ({ todo, onDelete, onSave, onCancel }) => {
     }, [isEditing]);
 
     useEffect(() => {
-        if (hasPendingChanges && (title.trim() !== '' || text.trim() !== '' || date.trim() !== '' || time.trim() !== '')) {
-            handleSave();
+        if (hasPendingChanges) {
+            const hasChanges = title !== todo.title || text !== todo.text || date !== todo.date || time !== todo.time;
+            if (hasChanges) {
+                handleSave();
+            }
             setHasPendingChanges(false);
         }
     }, [date, time]);
 
 
     const handleSave = () => {
-        if (title.trim() === '') {
-            handleCancel();
-            return;
+        const hasChanges = title !== todo.title || text !== todo.text || date !== todo.date || time !== todo.time;
+    
+        if (hasChanges) {
+            onSave({ ...todo, title, text, date, time });
         }
-
-        onSave({ ...todo, title, text, date, time });
         setIsEditing(false);
     };
 
@@ -167,113 +150,10 @@ const Task: React.FC<TaskProps> = ({ todo, onDelete, onSave, onCancel }) => {
                 <div className={styles.iconRow}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <CustomDateTimePicker
-                            desktopModeMediaQuery="(min-width: 768px)"
+                            {...datePickerProps}
                             value={selectedDate}
                             onChange={handleDateTimeChange}
-                            format="dddd - h:mm A"
-                            slotProps={{
-                                textField: {
-                                    variant: 'outlined',
-                                },
-                                digitalClockSectionItem: {
-                                    sx: {
-                                        backgroundColor: 'var(--secondary-color)',
-                                        borderRadius: '16px',
-                                        '&.Mui-selected': {
-                                            backgroundColor: 'var(--background-color)',
-                                            color: 'var(--ascent-color) !important',
-                                        },
-                                        '&:hover': {
-                                            backgroundColor: 'var(--background-color)',
-                                        },
-                                        color: 'var(--text-color)',
-                                        transition: 'background-color 0.2s ease, color 0.2s ease',
-
-                                    },
-                                },
-                                // Desktop view layout
-                                desktopPaper: {
-                                    sx: {
-                                        backgroundColor: 'var(--secondary-color)',
-                                        borderRadius: '16px',
-                                        boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-                                        overflow: 'hidden',
-                                    }
-                                },
-                                // Calendar header (month/year selection)
-                                calendarHeader: {
-                                    sx: {
-                                        backgroundColor: 'var(--secondary-color)',
-                                        color: 'var(--text-color)',
-                                        '& .MuiPickersCalendarHeader-label': {
-                                            color: 'var(--text-color)',
-                                        },
-                                        '& .MuiIconButton-root': {
-                                            color: 'var(--text-color)',
-                                        },
-                                    }
-                                },
-                                // Individual day cells
-                                day: {
-                                    sx: {
-                                        '&.Mui-selected': {
-                                            backgroundColor: 'var(--background-color)',
-                                            color: 'var(--ascent-color)',
-                                            '&:hover': {
-                                                backgroundColor: 'var(--primary-color-dark)',
-                                            },
-                                        },
-                                        '&.MuiPickersDay-root.Mui-selected': {
-                                            backgroundColor: 'var(--background-color)',
-                                            color: 'var(--ascent-color)',
-                                        },
-                                    }
-                                },
-                                // Action bar (OK/Cancel buttons)
-                                actionBar: {
-                                    sx: {
-                                        backgroundColor: 'var(--secondary-color)',
-                                        '& .MuiButton-root': {
-                                            color: 'var(--ascent-color)',
-                                        },
-                                    },
-                                },
-                                mobilePaper: {
-                                    sx: {
-                                        backgroundColor: 'var(--secondary-color)',
-                                        borderRadius: '16px',
-                                        overflow: 'hidden',
-                                        boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-                                        '& .MuiClock-root': {
-                                            backgroundColor: 'var(--secondary-color)',
-                                        },
-                                        '& .MuiClock-clock': {
-                                            backgroundColor: 'var(--background-color)',
-                                        },
-
-                                        '& .MuiClockNumber-root': {
-                                            color: 'var(--text-color)',
-                                            '&.Mui-selected': {
-                                                color: 'var(--ascent-color)',
-                                            },
-                                        },
-                                        '& .MuiClock-pin': {
-                                            backgroundColor: 'var(--primary)',
-                                          },
-                                        '& .MuiClockPointer-root': {
-                                            backgroundColor: 'var(--primary)',
-                                        },
-                                        '& .MuiClockPointer-thumb': {
-                                            backgroundColor: 'var(--primary)',
-                                            borderColor: 'var(--primary)',
-                                        },
-                                        '& .MuiPickersDay-root.Mui-selected': {
-                                            backgroundColor: 'var(--background-color)',
-                                            color: 'var(--ascent-color)',
-                                          },
-                                    },
-                                },
-                            }}
+                            slotProps={datePickerSlotProps}
                         />
                     </LocalizationProvider>
                 </div>
