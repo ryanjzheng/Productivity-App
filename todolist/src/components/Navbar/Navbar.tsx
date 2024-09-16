@@ -17,7 +17,7 @@ const SideNavbar: React.FC<SideNavbarProps> = ({ isOpen }) => {
 
   return (
     <div className={`${styles.sideNavbar} ${isOpen ? styles.open : styles.closed}`}>
-      <MDBNavbar expand="lg" light className={`flex-column vh-100`}>
+      <MDBNavbar expand="lg" light className="flex-column vh-100">
         <MDBContainer fluid>
           <MDBNavbarNav className="flex-column w-100 mt-4">
             <MDBNavbarItem className="mb-3 mt-4">

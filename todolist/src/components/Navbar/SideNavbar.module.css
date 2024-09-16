@@ -1,9 +1,9 @@
-
 .sideNavbar {
   position: fixed;
   top: 0;
   left: 0;
-  width: 200px;
+  width: 250px;
+  height: 100vh;
   background-color: var(--primary);
   color: #fff;
   padding-top: 1rem;
@@ -12,7 +12,7 @@
 }
 
 .sideNavbar.closed {
-  transform: translateX(-100%);
+  transform: translateX(-250px);
 }
 
 .sideNavbar.open {
@@ -34,4 +34,33 @@
 
 .navLink:hover {
   color: #adb5bd;
+}
+
+.content {
+  transition: margin-left 0.3s ease-in-out;
+}
+
+.content.sidebarOpen {
+  margin-left: 250px;
+}
+
+@media (max-width: 768px) {
+  .sideNavbar {
+    width: 80%;
+    max-width: 300px;
+  }
+  
+  .sideNavbar.closed {
+    transform: translateX(-100%);
+  }
+  
+  .content.sidebarOpen {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .sideNavbar {
+    width: 90%;
+  }
 }

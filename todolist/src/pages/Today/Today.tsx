@@ -111,7 +111,6 @@ const Today: React.FC = () => {
   if (isLoading) {
     return <div>Loading tasks...</div>;
   }
-  
 
   return (
     <div className={styles.todayPage}>
