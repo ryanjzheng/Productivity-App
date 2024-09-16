@@ -21,7 +21,6 @@ export function parseDate(text: string): DateParseResult {
     // First, try to parse with Chrono
     const chronoParsed = chrono.parse(text);
     if (chronoParsed.length > 0) {
-        console.log("chronoparsed", chronoParsed);
         const result = chronoParsed[0];
         return {
             date: result.start.date(),

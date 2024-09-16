@@ -6,6 +6,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { CustomDateTimePicker, datePickerProps, datePickerSlotProps } from '../../components/CustomDateTimePicker/CustomeDateTimePicker';
 import { parseDate, DateParseResult } from '../../utils/dateParser';
 import { Todo } from '../../hooks/FirebaseOperations';
+import HighlightedInput from '../../components/HighlightedInput/HighlightedInput';
 
 interface TaskProps {
     todo: Todo;
@@ -13,64 +14,6 @@ interface TaskProps {
     onSave: (task: Todo) => void;
     onCancel: (taskId: string) => void;
 }
-
-interface HighlightedInputProps {
-    value: string;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    parsedDate: DateParseResult | null;
-    className?: string;
-    placeholder?: string;
-    onKeyPress?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
-    inputRef?: React.RefObject<HTMLInputElement>;
-}
-
-const HighlightedInput: React.FC<HighlightedInputProps> = ({
-    value,
-    onChange,
-    parsedDate,
-    className,
-    placeholder,
-    onKeyPress,
-    inputRef: externalRef,
-}) => {
-    const internalRef = useRef<HTMLInputElement>(null);
-    const inputRef = externalRef || internalRef;
-
-    useEffect(() => {
-        if (inputRef.current) {
-            const input = inputRef.current;
-            input.style.caretColor = 'black';
-            input.style.color = 'transparent';
-        }
-    }, [inputRef]);
-
-    return (
-        <div className={styles.highlightedInputContainer}>
-            <div className={styles.highlightedText}>
-                {value.split('').map((char, index) => {
-                    const isHighlighted = parsedDate && index >= parsedDate.start && index < parsedDate.end;
-                    return (
-                        <span
-                            key={index}
-                            className={isHighlighted ? styles.highlight : ''}
-                        >
-                            {char}
-                        </span>
-                    );
-                })}
-            </div>
-            <input
-                ref={inputRef}
-                type="text"
-                value={value}
-                onChange={onChange}
-                onKeyPress={onKeyPress}
-                className={`${styles.invisibleInput} ${className}`}
-                placeholder={placeholder}
-            />
-        </div>
-    );
-};
 
 const Task: React.FC<TaskProps> = ({ todo, onDelete, onSave, onCancel }) => {
     const [isEditing, setIsEditing] = useState(!todo.id || todo.id.startsWith('temp-'));
@@ -143,9 +86,9 @@ const Task: React.FC<TaskProps> = ({ todo, onDelete, onSave, onCancel }) => {
             });
 
             // Reset the title state to the new title without the keyword
-            setTitle(finalTitle);
         }
-
+        
+        setTitle(finalTitle);
 
         setIsEditing(false);
     };

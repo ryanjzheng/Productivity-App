@@ -78,7 +78,8 @@
   }
   
   .highlight {
-    background-color: yellow;
+    background-color: var(--ascent-color);
+
   }
   
   .invisibleInput {
