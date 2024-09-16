@@ -99,7 +99,7 @@ const Today: React.FC = () => {
       }
     } catch (error) {
       console.error('Error saving task: ', error);
-      addMessage('Failed to save task. Please try again.', 'error');
+      addMessage('Failed to save task. Please try again.');
     }
   }, [currentUser, addTask, updateTask, addMessage]);
   
