@@ -1,6 +1,6 @@
-// MessageHandler.tsx
 import React, { useEffect } from 'react';
 import { useMessage } from '../../context/MessageContext';
+import styles from './MessageHandler.module.css'
 
 const MessageHandler: React.FC = () => {
   const { messages, setMessages } = useMessage();  // Include setMessages here
@@ -19,8 +19,8 @@ const MessageHandler: React.FC = () => {
   return (
     <div style={{ position: 'fixed', bottom: '10px', right: '20px' }}>
       {messages.map((message) => (
-        <div key={message.id} style={{ marginBottom: '8px', backgroundColor: '#333', color: '#fff', padding: '10px', borderRadius: '4px' }}>
-          {message.text}
+        <div key={message.id} className={styles.messageContainer}>
+          <div className={styles.messageText}> {message.text} </div>
         </div>
       ))}
     </div>
