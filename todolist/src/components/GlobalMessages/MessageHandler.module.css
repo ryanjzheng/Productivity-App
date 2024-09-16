@@ -1,0 +1,13 @@
+
+.messageContainer {
+    margin-bottom: 8px;
+    background-color: var(--secondary-color);
+    box-shadow: 0px 6px 18px 0px rgba(0, 72, 141, 0.12);
+    padding: 16px;
+    border-radius: 16px;
+}
+
+.messageText {
+    color: var(text-color);
+    font-weight: bold;
+}
