@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
-import { db } from '../../firebaseConfig';
+import React, { useEffect, useState, useCallback  } from 'react';
+import { useFirebaseOperations, Todo } from '../../hooks/FirebaseOperations';
 import { useAuth } from '../../context/AuthContext';
 import { useMessage } from '../../context/MessageContext';
 import AddTaskButton from '../../components/AddTaskButton/AddTaskButton';
@@ -8,19 +7,15 @@ import { handleNotifications, requestNotificationPermission, clearNotification }
 import Task from './Task';
 import styles from './Today.module.css';
 
-interface Todo {
-  id?: string;
-  title: string;
-  text: string;
-  order: number;
-  date?: string;
-  time?: string;
-}
 
 const Today: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const { currentUser } = useAuth();
   const { addMessage } = useMessage();
+  const { fetchTodos, addTask, updateTask, deleteTask } = useFirebaseOperations();
+  const [isLoading, setIsLoading] = useState(true);
+
+
 
   useEffect(() => {
     requestNotificationPermission();
@@ -29,27 +24,22 @@ const Today: React.FC = () => {
   useEffect(() => {
     if (!currentUser) return;
 
-    const fetchTodos = async () => {
+    const loadTodos = async () => {
+      setIsLoading(true);
       try {
-        const userTasksRef = collection(db, 'users', currentUser.uid, 'tasks');
-        const querySnapshot = await getDocs(userTasksRef);
-        const todosData = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as Todo[];
-
-        const sortedTodos = todosData.sort((a, b) => a.order - b.order);
-        setTodos(sortedTodos);
-  
-        // Schedule notifications for fetched tasks
-        handleNotifications(sortedTodos);
+        const fetchedTodos = await fetchTodos(currentUser.uid);
+        setTodos(fetchedTodos);
+        handleNotifications(fetchedTodos);
       } catch (error) {
         console.error("Error fetching user tasks: ", error);
+        addMessage('Failed to load tasks. Please try again.');
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchTodos();
-  }, [currentUser]);
+    loadTodos();
+  }, [currentUser, fetchTodos, addMessage]);
 
   const handleAddTask = () => {
     const newTask = {
@@ -64,68 +54,63 @@ const Today: React.FC = () => {
   };
   
 
-  const handleDeleteTask = async (taskId: string) => {
+  const handleDeleteTask = useCallback(async (taskId: string) => {
     if (!currentUser) return;
 
     try {
-      const taskDocRef = doc(db, 'users', currentUser.uid, 'tasks', taskId);
-      await deleteDoc(taskDocRef);
+      await deleteTask(currentUser.uid, taskId);
       setTodos(prevTodos => prevTodos.filter(todo => todo.id !== taskId));
       addMessage('Task Deleted');
     } catch (error) {
       console.error('Error deleting task: ', error);
+      addMessage('Failed to delete task. Please try again.');
     }
-  };
+  }, [currentUser, deleteTask, addMessage]);
 
-  const handleSaveTask = async (task: Todo) => {
+  const handleSaveTask = useCallback(async (task: Todo) => {
     if (!currentUser) return;
 
     try {
-        if (task.id && task.id.startsWith('temp-')) {
-            // Add new task
-            const userTasksRef = collection(db, 'users', currentUser.uid, 'tasks');
-            const docRef = await addDoc(userTasksRef, {
-                title: task.title,
-                text: task.text,
-                order: task.order,
-                date: task.date,
-                time: task.time,
-            });
-            const updatedTodos = todos.map((todo) =>
-                todo.id === task.id ? { ...task, id: docRef.id } : todo
-            );
-            setTodos(updatedTodos);
-            handleNotifications(updatedTodos);
-
-            addMessage('Task Added');
-        } else if (task.id) {
-            // Clear old notifications before updating task
-            clearNotification(task.id);
-
-            // Update existing task
-            const taskDocRef = doc(db, 'users', currentUser.uid, 'tasks', task.id);
-            await updateDoc(taskDocRef, {
-                title: task.title,
-                text: task.text,
-                order: task.order,
-                date: task.date,
-                time: task.time,
-            });
-            const updatedTodos = todos.map((todo) => (todo.id === task.id ? task : todo));
-            setTodos(updatedTodos);
-            handleNotifications(updatedTodos); // Reschedule notifications
-
-            addMessage('Task Updated');
+      if (task.id && task.id.startsWith('temp-')) {
+        // Only save the task if it has a title
+        if (task.title.trim() !== '') {
+          // Add new task
+          const newTask = await addTask(currentUser.uid, task);
+          setTodos(prevTodos => prevTodos.map(todo => 
+            todo.id === task.id ? newTask : todo
+          ));
+          handleNotifications([newTask]);
+          addMessage('Task Added');
+        } else {
+          // Remove the temporary task if it's empty
+          setTodos(prevTodos => prevTodos.filter(todo => todo.id !== task.id));
         }
+      } else if (task.id) {
+        // Clear old notifications before updating task
+        clearNotification(task.id);
+
+        // Update existing task
+        await updateTask(currentUser.uid, task);
+        setTodos(prevTodos => prevTodos.map(todo => 
+          todo.id === task.id ? task : todo
+        ));
+        handleNotifications([task]); // Reschedule notifications
+        addMessage('Task Updated');
+      }
     } catch (error) {
-        console.error('Error saving task: ', error);
+      console.error('Error saving task: ', error);
+      addMessage('Failed to save task. Please try again.', 'error');
     }
-};
+  }, [currentUser, addTask, updateTask, addMessage]);
   
 
-  const handleCancelNewTask = (taskId: string) => {
+  const handleCancelNewTask = useCallback((taskId: string) => {
     setTodos(prevTodos => prevTodos.filter(todo => todo.id !== taskId));
-  };
+  }, []);
+
+  if (isLoading) {
+    return <div>Loading tasks...</div>;
+  }
   
 
   return (
