@@ -24,6 +24,7 @@
     "antd": "^5.20.3",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
+    "chrono-node": "^2.7.7",
     "date-fns": "^2.30.0",
     "dayjs": "^1.11.13",
     "firebase": "^10.12.3",
