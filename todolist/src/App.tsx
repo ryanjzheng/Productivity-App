@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import Today from './pages/Today/Today';
 import Login from './pages/Login/Login';
@@ -26,9 +26,21 @@ const AppContent: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const shouldShowNavbar = useShouldShowNavbar();
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 768) {
+        setIsSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+
 
   return (
     <div>
@@ -38,8 +50,8 @@ const AppContent: React.FC = () => {
           <SideNavbar isOpen={isSidebarOpen} toggleNavbar={toggleSidebar} />
         </>
       )}
-      <div style={{ marginLeft: shouldShowNavbar && isSidebarOpen ? '200px' : '0', padding: '1rem' }}>
-        <Routes>
+      <div className={`content ${isSidebarOpen && shouldShowNavbar ? 'sidebarOpen' : ''}`}>
+      <Routes>
           <Route path="today" element={<ProtectedRoute element={<Today />} />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />

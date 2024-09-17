@@ -1,7 +1,25 @@
-.toggleButton {
-  position: fixed;
-  top: 1.5rem;
+
+.websiteHeader {
+  position: absolute;
+  top: 24px;
   left: 1rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.websiteName {
+  font-weight: bold;
+  font-size: 25px;
+  z-index: 1100;
+  color: var(--secondary-color);
+  cursor: pointer;
+}
+
+
+
+.toggleButton {
   z-index: 1100;
   border-radius: 8px;
   background-color: transparent; 
@@ -12,10 +30,9 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
 }
 
 
 .icon {
-  font-size: 1.5rem; /* Adjust the font-size as needed */
+  font-size: 1.5rem;
 }
