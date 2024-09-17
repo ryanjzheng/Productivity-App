@@ -40,14 +40,10 @@
   transition: margin-left 0.3s ease-in-out;
 }
 
-.content.sidebarOpen {
-  margin-left: 250px;
-}
 
 @media (max-width: 768px) {
   .sideNavbar {
-    width: 80%;
-    max-width: 300px;
+    max-width: 250px;
   }
   
   .sideNavbar.closed {
@@ -61,6 +57,81 @@
 
 @media (max-width: 480px) {
   .sideNavbar {
-    width: 90%;
+    max-width: 250px;
   }
+}
+
+
+.profileButtonContainer {
+  position: absolute;
+  bottom: 48px;
+  left: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.profileButton {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: var(--background-color);
+  color: var(--ascent-color);
+  font-size: 20px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+  overflow: hidden;
+  padding: 0; 
+}
+
+.profileButton:hover {
+  background-color: var(--background-color);
+}
+
+.profileImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;  /* This ensures the image covers the entire button */
+}
+
+.profilePopup {
+  position: absolute;
+  bottom: 45px;
+  left: 23px;
+  transform: translateX(-15%);
+  background-color: var(--background-color);
+  border-radius: 16px;
+  padding: 16px;
+  width: 230px;
+  box-shadow: 0px 6px 18px 0px rgba(0, 72, 141, 0.12);
+}
+
+.profilePopup h3 {
+  color: var(--text-color);
+  font-size: 18px;
+}
+
+.profilePopup p {
+  margin: 0 0 15px;
+  font-size: 14px;
+  color: var(--text-color);
+}
+
+.logoutButton {
+  width: 100%;
+  padding: 8px;
+  background-color: var(--ascent-color);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.logoutButton:hover {
+  background-color: var(--ascent-color-dark);
 }

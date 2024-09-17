@@ -1,7 +1,7 @@
 .toggleButton {
     position: fixed;
-    top: 1.5rem;
-    left: 3.5rem;
+    top: 32px;
+    left: 115px;
     z-index: 1100;
     border-radius: 8px;
     background-color: transparent; 

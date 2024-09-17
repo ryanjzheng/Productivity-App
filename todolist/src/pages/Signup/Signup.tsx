@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import styles from '../Login/Login.module.css';
 import { auth, googleProvider } from '../../firebaseConfig';
-import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithPopup, updateProfile } from "firebase/auth";
 import { FirebaseError } from 'firebase/app';
 import { db } from '../../firebaseConfig';
 import { doc, setDoc, collection } from 'firebase/firestore';
@@ -25,6 +25,7 @@ const getErrorMessage = (error: FirebaseError): string => {
 };
 
 const Signup: React.FC = () => {
+  const [firstName, setFirstName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -32,23 +33,27 @@ const Signup: React.FC = () => {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMessage(''); // Clear previous error message
+    setErrorMessage('');
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const uid = userCredential.user.uid;
+      const user = userCredential.user;
+      const uid = user.uid;
+
+      // Update user profile with display name
+      await updateProfile(user, { displayName: firstName });
 
       await setDoc(doc(db, 'users', uid), {
-        email: userCredential.user.email,
+        firstName,
+        email: user.email,
         createdAt: new Date().toISOString(),
       });
 
       const userTasksRef = collection(db, 'users', uid, 'tasks');
       await setDoc(doc(userTasksRef), {
-        title: 'Welcome Task', // Placeholder task document, optional
+        title: 'Welcome Task',
         text: 'This is your first task. Edit or delete me!',
         order: 0,
       });
-
 
       console.log('Signed up with email and password:', userCredential);
       navigate('/today');
@@ -61,19 +66,23 @@ const Signup: React.FC = () => {
   };
 
   const handleGoogleSignIn = async () => {
-    setErrorMessage(''); // Clear previous error message
+    setErrorMessage('');
     try {
       const result = await signInWithPopup(auth, googleProvider);
-      const uid = result.user.uid;
+      const user = result.user;
+      const uid = user.uid;
+
+      // Google Sign-In already provides a display name, so we don't need to update it
 
       await setDoc(doc(db, 'users', uid), {
-        email: result.user.email,
+        firstName: user.displayName?.split(' ')[0] || '',
+        email: user.email,
         createdAt: new Date().toISOString(),
       });
 
       const userTasksRef = collection(db, 'users', uid, 'tasks');
       await setDoc(doc(userTasksRef), {
-        title: 'Welcome Task', // Placeholder task document, optional
+        title: 'Welcome Task',
         text: 'This is your first task. Edit or delete me!',
         order: 0,
       });
@@ -87,7 +96,6 @@ const Signup: React.FC = () => {
       }
     }
   };
-
   return (
     <section className={`vh-100 ${styles.signupContainer}`}>
       <div className="container py-5 h-100">
@@ -99,6 +107,17 @@ const Signup: React.FC = () => {
                   <small>{errorMessage}</small>
                 </div>
               )}
+              {/* First Name input */}
+              <div data-mdb-input-init className={`form-outline mb-4 ${styles.formOutline}`}>
+                <MDBInput
+                  type="text"
+                  id="form1Example12"
+                  className="form-control form-control-lg"
+                  label="First Name"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+              </div>
               {/* Email input */}
               <div data-mdb-input-init className={`form-outline mb-4 ${styles.formOutline}`}>
                 <MDBInput
