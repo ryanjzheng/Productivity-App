@@ -52,7 +52,7 @@
 }
 
 .taskTitleInput {
-    font-weight: bold;
+    font-weight: 500;
     font-size: 20px;
     color: var(--text-color);
     width: 100%;
@@ -84,7 +84,7 @@
   }
   
   .highlightedText {
-    font-weight: bold;
+    font-weight: 500;
     position: absolute;
     font-size: 20px;
     color: var(--text-color);
@@ -104,4 +104,6 @@
     background: transparent;
     position: relative;
     width: 100%;
+    outline: none;
+    border: none;
   }
