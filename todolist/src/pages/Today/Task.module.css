@@ -44,8 +44,6 @@
     flex-direction: column;
     cursor: pointer;
     width: 100%;
-    position: relative;
-
 }
 
 .invisibleInput {
@@ -54,7 +52,7 @@
 }
 
 .taskTitleInput {
-    font-weight: 500;
+    font-weight: bold;
     font-size: 20px;
     color: var(--text-color);
     width: 100%;
@@ -70,20 +68,40 @@
 }
 
 .iconRow {
-    position: absolute;
+    position: absolute; 
     bottom: 0;
     left: 30px;
-    display: flex;
+    display: flex; 
     justify-content: flex-end;
     gap: 10px;
     padding: 5px 10px;
-}
+  }
 
 
-.invisibleInput {
+  .highlightedInputContainer {
+    position: relative;
+    width: 100%;
+  }
+  
+  .highlightedText {
+    font-weight: bold;
+    position: absolute;
+    font-size: 20px;
+    color: var(--text-color);
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  
+  .highlight {
+    background-color: var(--ascent-color);
+
+  }
+  
+  .invisibleInput {
     background: transparent;
     position: relative;
     width: 100%;
-    outline: none;
-    border: none;
-}
+  }

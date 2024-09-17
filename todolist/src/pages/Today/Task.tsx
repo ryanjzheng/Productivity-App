@@ -87,7 +87,7 @@ const Task: React.FC<TaskProps> = ({ todo, onDelete, onSave, onCancel }) => {
 
             // Reset the title state to the new title without the keyword
         }
-
+        
         setTitle(finalTitle);
 
         setIsEditing(false);
@@ -138,11 +138,6 @@ const Task: React.FC<TaskProps> = ({ todo, onDelete, onSave, onCancel }) => {
         }
     };
 
-    const handleHighlightClick = () => {
-        console.log("Highlight clicked in Task component");
-
-    };
-
 
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
@@ -172,7 +167,6 @@ const Task: React.FC<TaskProps> = ({ todo, onDelete, onSave, onCancel }) => {
                                 placeholder="Task Title"
                                 onKeyPress={(e) => e.key === 'Enter' && handleSave()}
                                 inputRef={titleInputRef}
-                                onHighlightClick={handleHighlightClick}
                             />
                             <input
                                 className={`${styles.invisibleInput} ${styles.taskDescInput}`}
