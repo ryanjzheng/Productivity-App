@@ -7,7 +7,7 @@ export const CustomDateTimePicker = styled(DateTimePicker)({
     color: 'var(--text-color)',
     width: '215px',
     height: '35px',
-    backgroundColor: 'var(--background-color)',
+    backgroundColor: 'var(--third-color)',
     borderRadius: '16px',
   },
   '& .MuiOutlinedInput-notchedOutline': {

@@ -1,9 +1,10 @@
-import React, { useEffect, useState, useCallback  } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useFirebaseOperations, Todo } from '../../hooks/FirebaseOperations';
 import { useAuth } from '../../context/AuthContext';
 import { useMessage } from '../../context/MessageContext';
 import AddTaskButton from '../../components/AddTaskButton/AddTaskButton';
 import { handleNotifications, requestNotificationPermission, clearNotification } from '../../utils/notificationScheduler';
+import { getFirstName } from '../../utils/generalUtils';
 import Task from './Task';
 import styles from './Today.module.css';
 
@@ -11,6 +12,7 @@ import styles from './Today.module.css';
 const Today: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const { currentUser } = useAuth();
+  const [greeting, setGreeting] = useState('');
   const { addMessage } = useMessage();
   const { fetchTodos, addTask, updateTask, deleteTask } = useFirebaseOperations();
   const [isLoading, setIsLoading] = useState(true);
@@ -41,6 +43,21 @@ const Today: React.FC = () => {
     loadTodos();
   }, [currentUser, fetchTodos, addMessage]);
 
+
+  useEffect(() => {
+    const updateGreeting = () => {
+      const hour = new Date().getHours();
+      if (hour < 12) setGreeting('Good Morning');
+      else if (hour < 18) setGreeting('Good Afternoon');
+      else setGreeting('Good Evening');
+    };
+
+    updateGreeting();
+    const intervalId = setInterval(updateGreeting, 60000); // Update every minute
+
+    return () => clearInterval(intervalId);
+  }, []);
+
   const handleAddTask = () => {
     const newTask = {
       id: `temp-${Date.now()}`,
@@ -48,11 +65,11 @@ const Today: React.FC = () => {
       text: '',
       order: todos.length + 1,
       date: '',
-      time: '', 
+      time: '',
     };
     setTodos(prevTodos => [...prevTodos, newTask]);
   };
-  
+
 
   const handleDeleteTask = useCallback(async (taskId: string) => {
     if (!currentUser) return;
@@ -76,7 +93,7 @@ const Today: React.FC = () => {
         if (task.title.trim() !== '') {
           // Add new task
           const newTask = await addTask(currentUser.uid, task);
-          setTodos(prevTodos => prevTodos.map(todo => 
+          setTodos(prevTodos => prevTodos.map(todo =>
             todo.id === task.id ? newTask : todo
           ));
           handleNotifications([newTask]);
@@ -91,7 +108,7 @@ const Today: React.FC = () => {
 
         // Update existing task
         await updateTask(currentUser.uid, task);
-        setTodos(prevTodos => prevTodos.map(todo => 
+        setTodos(prevTodos => prevTodos.map(todo =>
           todo.id === task.id ? task : todo
         ));
         handleNotifications([task]); // Reschedule notifications
@@ -102,7 +119,7 @@ const Today: React.FC = () => {
       addMessage('Failed to save task. Please try again.');
     }
   }, [currentUser, addTask, updateTask, addMessage]);
-  
+
 
   const handleCancelNewTask = useCallback((taskId: string) => {
     setTodos(prevTodos => prevTodos.filter(todo => todo.id !== taskId));
@@ -116,7 +133,9 @@ const Today: React.FC = () => {
     <div className={styles.todayPage}>
       <AddTaskButton onClick={handleAddTask} />
       <div className={styles.todayHeader}>
-        <div className={styles.title}>Today</div>
+        <div className={styles.title}>
+        {greeting}{currentUser?.displayName ? `, ${getFirstName(currentUser.displayName)}` : ''}
+        </div>
       </div>
 
       {todos.length === 0 ? (
