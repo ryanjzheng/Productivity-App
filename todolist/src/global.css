@@ -1,0 +1,16 @@
+:root {
+  --mdb-body-font-family: Georgia, serif;
+}
+
+body, 
+html, 
+body[data-mdb-theme],
+#root,
+#root .MDBBtn,
+#root .MDBInput,
+#root .form-control,
+#root p,
+#root h1, #root h2, #root h3, #root h4, #root h5, #root h6,
+#root span:not(.fa):not(.fab):not(.fas):not(.far):not(.bi) {
+  font-family: Georgia, serif !important;
+}

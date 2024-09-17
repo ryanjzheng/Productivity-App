@@ -15,6 +15,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import './global.css'
 
 const useShouldShowNavbar = () => {
   const location = useLocation();
