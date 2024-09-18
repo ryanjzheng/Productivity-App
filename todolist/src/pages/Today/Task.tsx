@@ -15,7 +15,7 @@ interface TaskProps {
     onCancel: (taskId: string) => void;
 }
 
-const Task: React.FC<TaskProps> = ({ todo, onDelete, onSave }) => {
+const Task: React.FC<TaskProps> = ({ todo, onDelete, onSave, onCancel }) => {
     const [isEditing, setIsEditing] = useState(!todo.id || todo.id.startsWith('temp-'));
     const [parsedDate, setParsedDate] = useState<DateParseResult | null>(null);
     const titleInputRef = useRef<HTMLInputElement>(null);
@@ -41,7 +41,7 @@ const Task: React.FC<TaskProps> = ({ todo, onDelete, onSave }) => {
 
     const handleSave = useCallback((dateToSave: Dayjs | null = localDatetime) => {
         let finalDatetime = dateToSave;
-
+        console.log("hit");
         if (parsedDate && parsedDate.recognizedText) {
             if (!dateToSave) {
                 finalDatetime = dayjs(parsedDate.date);
@@ -56,28 +56,24 @@ const Task: React.FC<TaskProps> = ({ todo, onDelete, onSave }) => {
             time: finalDatetime ? finalDatetime.format('HH:mm') : ''
         };
 
-
-        console.log("final date time", finalDatetime);
-
         const hasChanges =
             updatedTodo.title !== todo.title ||
             updatedTodo.text !== todo.text ||
             updatedTodo.date !== todo.date ||
             updatedTodo.time !== todo.time;
 
-        if (hasChanges) {
-            console.log("Saving updated todo:", updatedTodo);
-            onSave(updatedTodo);
+        if (updatedTodo.title.trim() === '' && updatedTodo.text.trim() === '') {
+            onCancel(todo.id!);
         }
 
-        setIsEditing(false);
-    }, [localTitle, localText, localDatetime, parsedDate, todo, onSave]);
+            if (hasChanges) {
+                console.log("Saving updated todo:", updatedTodo);
+                onSave(updatedTodo);
+            }
 
-    const handleClickOutside = useCallback((e: MouseEvent) => {
-        if (editingRef.current && !editingRef.current.contains(e.target as Node)) {
-            handleSave();
-        }
-    }, [handleSave]);
+            setIsEditing(false);
+        }, [localTitle, localText, localDatetime, parsedDate, todo, onSave]);
+
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newTitle = e.target.value;
@@ -98,6 +94,13 @@ const Task: React.FC<TaskProps> = ({ todo, onDelete, onSave }) => {
         console.log("wored");
         handleSave(newDate);
     }, [handleSave]);
+
+    const handleClickOutside = useCallback((e: MouseEvent) => {
+        if (editingRef.current && !editingRef.current.contains(e.target as Node)) {
+            handleSave();
+        }
+    }, [handleSave]);
+
 
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
