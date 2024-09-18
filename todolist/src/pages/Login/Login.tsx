@@ -2,14 +2,15 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import { MDBInput, MDBBtn } from 'mdb-react-ui-kit';
-import { FaGoogle } from 'react-icons/fa';
-//FaFacebookF, FaTwitter
+import { FaGoogle, FaTwitter, FaFacebookF } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import styles from './Login.module.css';
 import { useNavigate } from 'react-router-dom';
 import { auth, googleProvider } from '../../firebaseConfig';
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { FirebaseError } from 'firebase/app';
+import EvLogo from '../../assets/evlogo.png';
+import backgroundImage from '../../assets/evbackground.png';
 
 const errorMessages: { [key: string]: string } = {
   'auth/invalid-email': 'Invalid email address.',
@@ -33,8 +34,7 @@ const Login: React.FC = () => {
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      console.log('Signed in with email and password:', userCredential);
+      await signInWithEmailAndPassword(auth, email, password);
       navigate('/today');
     } catch (error) {
       if (error instanceof FirebaseError) {
@@ -46,8 +46,7 @@ const Login: React.FC = () => {
 
   const handleGoogleSignIn = async () => {
     try {
-      const result = await signInWithPopup(auth, googleProvider);
-      console.log('Signed in with Google:', result);
+      await signInWithPopup(auth, googleProvider);
       navigate('/today');
     } catch (error) {
       if (error instanceof FirebaseError) {
@@ -58,92 +57,86 @@ const Login: React.FC = () => {
   };
 
   return (
-    <section className={`vh-100 ${styles.loginContainer}`}>
+    <section className={`vh-100 ${styles.loginContainer}`}
+      style={{
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
       <div className="container py-5 h-100">
-        <div className="row d-flex align-items-center justify-content-center h-100">
-          <div className="col-md-8 col-lg-7 col-xl-6">
-            <img
-              src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.svg"
-              className="img-fluid"
-              alt="Phone image"
-            />
-          </div>
-          <div className="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
-            <form onSubmit={handleSignIn}>
-              {errorMessage && (
-                <div className="mb-3 mt-3 text-danger text-center">
-                  <small>{errorMessage}</small>
-                </div>
-              )}
-              {/* Email input */}
-              <div data-mdb-input-init className={`form-outline mb-4 ${styles.formOutline}`}>
-                <MDBInput
-                  type="email"
-                  id="form1Example13"
-                  className="form-control form-control-lg"
-                  label="Email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+        <div className="row justify-content-center align-items-center h-100">
+          <div className="col-12 col-md-8 col-lg-6">
+            <div className={`${styles.loginContent} p-4`}>
+              <div className={`${styles.logoContainer} mb-4`}>
+                <img
+                  src={EvLogo}
+                  className="img-fluid"
+                  alt="Login image"
                 />
               </div>
-
-              {/* Password input */}
-              <div data-mdb-input-init className={`form-outline mb-4 ${styles.formOutline}`}>
-                <MDBInput
-                  type="password"
-                  id="form1Example23"
-                  className="form-control form-control-lg"
-                  label="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-
-              {/* Submit button */}
-              <MDBBtn
-                type="submit"
-                data-mdb-button-init
-                data-mdb-ripple-init
-                className="btn btn-primary btn-lg btn-block"
-                style={{ marginBottom: '1rem' }}
-              >
-                Sign in
-              </MDBBtn>
-
-              <div className="d-flex justify-content-around align-items-center mb-4">
-                {/* Checkbox */}
-                {/* <div className="form-check">
-                  <input 
-                    className="form-check-input" 
-                    type="checkbox" 
-                    value="" 
-                    id="form1Example3" 
-                    defaultChecked 
+              <form onSubmit={handleSignIn}>
+                {errorMessage && (
+                  <div className="mb-3 mt-3 text-danger text-center">
+                    <small>{errorMessage}</small>
+                  </div>
+                )}
+                {/* Email input */}
+                <div data-mdb-input-init className={`form-outline mb-4 ${styles.formOutline}`}>
+                  <MDBInput
+                    type="email"
+                    id="form1Example13"
+                    className="form-control form-control-lg"
+                    label="Email address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
-                  <label className="form-check-label" htmlFor="form1Example3">
-                    Remember me
-                  </label>
-                </div> */}
-                <Link to="/signup" className="text-decoration-none">Sign up</Link>
-                <a href="#!">Forgot password?</a>
-              </div>
+                </div>
 
-              <div className={`${styles.divider} d-flex align-items-center my-4`}>
-                <hr className="flex-fill" />
-                <p className="text-center fw-bold mx-3 mb-0 text-muted">OR</p>
-                <hr className="flex-fill" />
-              </div>
-              <MDBBtn
-                onClick={handleGoogleSignIn}
-                data-mdb-ripple-init
-                className="btn btn-primary btn-lg btn-block"
-                style={{ backgroundColor: '#db4437' }}
-                href="#!"
-                role="button"
-              >
-                <FaGoogle className="me-2" />Continue with Google
-              </MDBBtn>
-              {/* <MDBBtn
+                {/* Password input */}
+                <div data-mdb-input-init className={`form-outline mb-4 ${styles.formOutline}`}>
+                  <MDBInput
+                    type="password"
+                    id="form1Example23"
+                    className="form-control form-control-lg"
+                    label="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+
+                {/* Submit button */}
+                <MDBBtn
+                  type="submit"
+                  data-mdb-button-init
+                  data-mdb-ripple-init
+                  className="btn btn-primary btn-lg btn-block"
+                  style={{ marginBottom: '1rem' }}
+                >
+                  Sign in
+                </MDBBtn>
+
+                <div className="d-flex justify-content-around align-items-center mb-4">
+                  <Link to="/signup" className="text-decoration-none">Sign up</Link>
+                  <a href="#!">Forgot password?</a>
+                </div>
+
+                <div className={`${styles.divider} d-flex align-items-center my-4`}>
+                  <hr className="flex-fill" />
+                  <p className="text-center fw-bold mx-3 mb-0 text-muted">OR</p>
+                  <hr className="flex-fill" />
+                </div>
+                <MDBBtn
+                  onClick={handleGoogleSignIn}
+                  data-mdb-ripple-init
+                  className="btn btn-primary btn-lg btn-block"
+                  style={{ backgroundColor: '#db4437' }}
+                  href="#!"
+                  role="button"
+                >
+                  <FaGoogle className="me-2" />Continue with Google
+                </MDBBtn>
+                <MDBBtn
                 data-mdb-ripple-init
                 className="btn btn-primary btn-lg btn-block"
                 style={{ backgroundColor: '#3b5998' }}
@@ -160,8 +153,9 @@ const Login: React.FC = () => {
                 role="button"
               >
                 <FaTwitter className="me-2" />Continue with Twitter
-              </MDBBtn> */}
-            </form>
+              </MDBBtn>
+              </form>
+            </div>
           </div>
         </div>
       </div>

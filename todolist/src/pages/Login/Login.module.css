@@ -1,3 +1,26 @@
+
+
+.loginContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loginContent {
+  max-width: 450px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.logoContainer {
+  text-align: center;
+}
+
+.logoContainer img {
+  max-width: 200px;
+  height: auto;
+}
+
 .divider {
     display: flex;
     align-items: center;
@@ -9,11 +32,13 @@
     content: "";
     flex: 1;
     height: 1px;
-    background: #eee;
   }
   
   .divider p {
     margin: 0 10px;
+  }
+
+  .formOutline {
   }
   
   
