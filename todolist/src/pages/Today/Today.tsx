@@ -16,7 +16,7 @@ const Today: React.FC = () => {
   const { addMessage } = useMessage();
   const { fetchTodos, addTask, updateTask, deleteTask } = useFirebaseOperations();
   const [isLoading, setIsLoading] = useState(true);
-
+  const [isAddingTask, setIsAddingTask] = useState(false);
 
 
   useEffect(() => {
@@ -59,17 +59,19 @@ const Today: React.FC = () => {
   }, []);
 
   const handleAddTask = () => {
-    const newTask = {
-      id: `temp-${Date.now()}`,
-      title: '',
-      text: '',
-      order: todos.length + 1,
-      date: '',
-      time: '',
-    };
-    setTodos(prevTodos => [...prevTodos, newTask]);
+    if (!isAddingTask) {
+      const newTask = {
+        id: `temp-${Date.now()}`,
+        title: '',
+        text: '',
+        order: todos.length + 1,
+        date: '',
+        time: '',
+      };
+      setTodos(prevTodos => [...prevTodos, newTask]);
+      setIsAddingTask(true);
+    }
   };
-
 
   const handleDeleteTask = useCallback(async (taskId: string) => {
     if (!currentUser) return;
@@ -86,7 +88,7 @@ const Today: React.FC = () => {
 
   const handleSaveTask = useCallback(async (task: Todo) => {
     if (!currentUser) return;
-  
+
     try {
       if (task.id && task.id.startsWith('temp-')) {
         // Only save the task if it has a title
@@ -102,18 +104,19 @@ const Today: React.FC = () => {
           // Remove the temporary task if it's empty
           setTodos(prevTodos => prevTodos.filter(todo => todo.id !== task.id));
         }
+        setIsAddingTask(false);  // Reset the state after saving or removing the task
       } else if (task.id) {
         // Find the existing task
         const existingTask = todos.find(t => t.id === task.id);
-        
+
         if (existingTask) {
           // Check if any changes were made
           const hasChanges = JSON.stringify(existingTask) !== JSON.stringify(task);
-          
+
           if (hasChanges) {
             // Clear old notifications before updating task
             clearNotification(task.id);
-  
+
             // Update existing task
             await updateTask(currentUser.uid, task);
             setTodos(prevTodos => prevTodos.map(todo =>
@@ -134,6 +137,7 @@ const Today: React.FC = () => {
 
   const handleCancelNewTask = useCallback((taskId: string) => {
     setTodos(prevTodos => prevTodos.filter(todo => todo.id !== taskId));
+    setIsAddingTask(false);
   }, []);
 
   if (isLoading) {
@@ -145,7 +149,7 @@ const Today: React.FC = () => {
       <AddTaskButton onClick={handleAddTask} />
       <div className={styles.todayHeader}>
         <div className={styles.title}>
-        {greeting}{currentUser?.displayName ? `, ${getFirstName(currentUser.displayName)}` : ''}
+          {greeting}{currentUser?.displayName ? `, ${getFirstName(currentUser.displayName)}` : ''}
         </div>
       </div>
 
