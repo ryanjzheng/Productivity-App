@@ -66,10 +66,10 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
   return (
     <AuthProvider>
-      <MessageProvider> {/* Wrap your app with the MessageProvider */}
+      <MessageProvider>
         <Router>
           <AppContent />
-          <MessageHandler /> {/* Add the MessageHandler component */}
+          <MessageHandler />
         </Router>
       </MessageProvider>
     </AuthProvider>
