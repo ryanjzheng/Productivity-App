@@ -44,18 +44,6 @@ const SideNavbar: React.FC<SideNavbarProps> = ({ isOpen, openProfileModal  }) =>
                 Today
               </MDBNavbarLink>
             </MDBNavbarItem>
-            <MDBNavbarItem className="mb-3">
-              <MDBNavbarLink href="#" className={styles.navLink}>
-                <MDBIcon fas icon="user" className="me-2" />
-                Profile
-              </MDBNavbarLink>
-            </MDBNavbarItem>
-            <MDBNavbarItem className="mb-3">
-              <MDBNavbarLink href="#" className={styles.navLink}>
-                <MDBIcon fas icon="cog" className="me-2" />
-                Settings
-              </MDBNavbarLink>
-            </MDBNavbarItem>
           </MDBNavbarNav>
         </MDBContainer>
         <div className={styles.profileButtonContainer}>

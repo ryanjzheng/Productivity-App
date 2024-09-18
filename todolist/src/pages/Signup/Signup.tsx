@@ -58,11 +58,14 @@ const Signup: React.FC = () => {
         createdAt: new Date().toISOString(),
       });
 
+      const now = new Date();
       const userTasksRef = collection(db, 'users', uid, 'tasks');
       await setDoc(doc(userTasksRef), {
         title: 'Welcome Task',
         text: 'This is your first task. Edit or delete me!',
         order: 0,
+        date: now.toISOString().split('T')[0],
+        time: now.toTimeString().split(' ')[0].slice(0, 5),
       });
 
       console.log('Signed up with email and password:', userCredential);
@@ -90,11 +93,14 @@ const Signup: React.FC = () => {
         createdAt: new Date().toISOString(),
       });
 
+      const now = new Date();
       const userTasksRef = collection(db, 'users', uid, 'tasks');
       await setDoc(doc(userTasksRef), {
         title: 'Welcome Task',
         text: 'This is your first task. Edit or delete me!',
         order: 0,
+        date: now.toISOString().split('T')[0],
+        time: now.toTimeString().split(' ')[0].slice(0, 5),
       });
 
       console.log('Signed up with Google:', result);

@@ -11,6 +11,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
   const { currentUser, logout } = useAuth();
   const modalRef = useRef<HTMLDivElement>(null);
   const [showBackground, setShowBackground] = useState(false);
+  const [activeTab, setActiveTab] = useState('account');
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -21,7 +22,6 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
 
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
-      // Start the background transition after a short delay
       const timer = setTimeout(() => setShowBackground(true), 300);
       return () => {
         document.removeEventListener('mousedown', handleClickOutside);
@@ -46,9 +46,50 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
   return (
     <div className={`${styles.modalOverlay} ${showBackground ? styles.imageVisible : ''}`}>
       <div ref={modalRef} className={styles.modalContent}>
-        <h2>{currentUser?.displayName}</h2>
-        <p>{currentUser?.email}</p>
-        <button onClick={handleLogout} className={styles.logoutButton}>Logout</button>
+        <div className={styles.tabs}>
+          <button 
+            className={`${styles.tabButton} ${activeTab === 'account' ? styles.active : ''}`}
+            onClick={() => setActiveTab('account')}
+          >
+            Account
+          </button>
+          <button 
+            className={`${styles.tabButton} ${activeTab === 'preferences' ? styles.active : ''}`}
+            onClick={() => setActiveTab('preferences')}
+          >
+            Preferences
+          </button>
+          <button 
+            className={`${styles.tabButton} ${activeTab === 'logout' ? styles.active : ''}`}
+            onClick={() => setActiveTab('logout')}
+          >
+            Logout
+          </button>
+        </div>
+
+        <div className={styles.tabContent}>
+          {activeTab === 'account' && (
+            <div>
+              <h2>{currentUser?.displayName}</h2>
+              <p>{currentUser?.email}</p>
+              {/* Add more account-related content here */}
+            </div>
+          )}
+          {activeTab === 'preferences' && (
+            <div>
+              <h2>Preferences</h2>
+              {/* Add preferences options here */}
+              <p>Theme: Purp</p>
+              <p>Notifications: On</p>
+            </div>
+          )}
+          {activeTab === 'logout' && (
+            <div className={styles.logoutContainer}>
+              <h2>Are you sure you want to logout?</h2>
+              <button onClick={handleLogout} className={styles.logoutButton}>Confirm Logout</button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
