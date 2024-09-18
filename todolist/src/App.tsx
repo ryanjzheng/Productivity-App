@@ -10,6 +10,7 @@ import ToggleButton from './components/ToggleButton/ToggleButton';
 import MessageHandler from './components/GlobalMessages/MessageHandler';
 import { MessageProvider } from './context/MessageContext';
 import { AuthProvider } from './context/AuthContext';
+import ProfileModal from './components/ProfileModal/ProfileModal';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
@@ -25,6 +26,7 @@ const useShouldShowNavbar = () => {
 
 const AppContent: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const shouldShowNavbar = useShouldShowNavbar();
 
   useEffect(() => {
@@ -42,14 +44,25 @@ const AppContent: React.FC = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  const openProfileModal = () => {
+    setIsProfileModalOpen(true);
+  };
+
+  const closeProfileModal = () => {
+    setIsProfileModalOpen(false);
+  };
+
 
   return (
     <div>
       {shouldShowNavbar && (
         <>
           <ToggleButton onClick={toggleSidebar} />
-          <SideNavbar isOpen={isSidebarOpen} toggleNavbar={toggleSidebar} />
-        </>
+          <SideNavbar 
+            isOpen={isSidebarOpen} 
+            toggleNavbar={toggleSidebar} 
+            openProfileModal={openProfileModal}
+          />        </>
       )}
       <div className={`content ${isSidebarOpen && shouldShowNavbar ? 'sidebarOpen' : ''}`}>
       <Routes>
@@ -59,6 +72,10 @@ const AppContent: React.FC = () => {
           <Route path="*" element={<WildcardRoute />} />
         </Routes>
       </div>
+      <ProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={closeProfileModal}
+      />
     </div>
   );
 };

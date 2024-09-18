@@ -76,8 +76,7 @@
   border-radius: 50%;
   background-color: var(--background-color);
   color: var(--ascent-color);
-  font-size: 20px;
-  font-weight: bold;
+  font-size: 23px;
   border: none;
   cursor: pointer;
   display: flex;
