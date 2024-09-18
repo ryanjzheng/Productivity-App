@@ -5,7 +5,7 @@ import { styled } from '@mui/material/styles';
 export const CustomDateTimePicker = styled(DateTimePicker)({
   '& .MuiInputBase-root': {
     color: 'var(--text-color)',
-    width: '225px',
+    width: '170px',
     height: '30px',
     backgroundColor: 'var(--third-color)',
     borderRadius: '16px',
@@ -21,7 +21,8 @@ export const CustomDateTimePicker = styled(DateTimePicker)({
 
 export const datePickerProps = {
   desktopModeMediaQuery: "(min-width: 768px)",
-  format: "dddd h:mm A",
+  inputFormat: "YYYY-MM-DD HH:mm",
+  format: "ddd h:mm A           MMM D",
 };
 
 export const datePickerSlotProps = {

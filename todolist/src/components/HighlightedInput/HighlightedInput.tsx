@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { DateParseResult } from '../../utils/dateParser';
-import styles from '../../pages/Today/Task.module.css';
+import styles from './HighlightedInput.module.css';
 
 
 interface HighlightedInputProps {

@@ -86,7 +86,7 @@ const Today: React.FC = () => {
 
   const handleSaveTask = useCallback(async (task: Todo) => {
     if (!currentUser) return;
-
+  
     try {
       if (task.id && task.id.startsWith('temp-')) {
         // Only save the task if it has a title
@@ -103,22 +103,33 @@ const Today: React.FC = () => {
           setTodos(prevTodos => prevTodos.filter(todo => todo.id !== task.id));
         }
       } else if (task.id) {
-        // Clear old notifications before updating task
-        clearNotification(task.id);
-
-        // Update existing task
-        await updateTask(currentUser.uid, task);
-        setTodos(prevTodos => prevTodos.map(todo =>
-          todo.id === task.id ? task : todo
-        ));
-        handleNotifications([task]); // Reschedule notifications
-        addMessage('Task Updated');
+        // Find the existing task
+        const existingTask = todos.find(t => t.id === task.id);
+        
+        if (existingTask) {
+          // Check if any changes were made
+          const hasChanges = JSON.stringify(existingTask) !== JSON.stringify(task);
+          
+          if (hasChanges) {
+            // Clear old notifications before updating task
+            clearNotification(task.id);
+  
+            // Update existing task
+            await updateTask(currentUser.uid, task);
+            setTodos(prevTodos => prevTodos.map(todo =>
+              todo.id === task.id ? task : todo
+            ));
+            handleNotifications([task]); // Reschedule notifications
+            addMessage('Task Updated');
+          }
+          // If no changes, don't update or show a message
+        }
       }
     } catch (error) {
       console.error('Error saving task: ', error);
       addMessage('Failed to save task. Please try again.');
     }
-  }, [currentUser, addTask, updateTask, addMessage]);
+  }, [currentUser, addTask, updateTask, addMessage, todos]);
 
 
   const handleCancelNewTask = useCallback((taskId: string) => {

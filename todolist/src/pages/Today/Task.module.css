@@ -36,6 +36,7 @@
 .checkbox {
     transform: scale(1.1);
     display: block;
+    cursor: pointer;
 }
 
 .taskContent {
@@ -51,20 +52,27 @@
     background: transparent;
 }
 
-.taskTitleInput {
-    font-weight: 500;
+.taskTitleInput,
+.taskDescInput {
     font-size: 20px;
     color: var(--text-color);
     width: 100%;
-    position: relative;
-    z-index: 2;
     background: transparent;
+    border: none;
+    outline: none;
+    padding: 0;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.taskTitleInput {
+    font-weight: 500;
 }
 
 .taskDescInput {
     font-size: 14px;
     color: gray;
-    width: 100%;
+    margin-top: 4px;
 }
 
 .iconRow {
@@ -75,29 +83,6 @@
     justify-content: flex-end;
     gap: 10px;
     padding: 5px 10px;
-  }
-
-
-  .highlightedInputContainer {
-    position: relative;
-    width: 100%;
-  }
-  
-  .highlightedText {
-    font-weight: 500;
-    position: absolute;
-    font-size: 20px;
-    color: var(--text-color);
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-  }
-  
-  .highlight {
-    background-color: var(--ascent-color);
-
   }
   
   .invisibleInput {

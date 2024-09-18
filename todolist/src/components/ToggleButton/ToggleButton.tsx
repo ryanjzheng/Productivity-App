@@ -19,7 +19,7 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({ onClick }) => {
       <button className={styles.toggleButton} onClick={onClick}>
         <FontAwesomeIcon icon={faBars} className={styles.icon} />
       </button>
-      <div className={`${styles.websiteName}`} onClick={handleNavigateHome}>UPA</div>
+      {/* <div className={`${styles.websiteName}`} onClick={handleNavigateHome}>UPA</div> */}
     </div>
   );
 };

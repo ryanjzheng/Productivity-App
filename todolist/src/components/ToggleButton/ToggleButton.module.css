@@ -1,12 +1,13 @@
 
 .websiteHeader {
-  position: absolute;
-  top: 24px;
+  position: fixed;
+  top: 35px;
   left: 1rem;
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 8px;
+  z-index: 1100;
 }
 
 .websiteName {
