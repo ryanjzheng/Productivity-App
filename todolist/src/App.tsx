@@ -11,6 +11,7 @@ import MessageHandler from './components/GlobalMessages/MessageHandler';
 import { MessageProvider } from './context/MessageContext';
 import { AuthProvider } from './context/AuthContext';
 import ProfileModal from './components/ProfileModal/ProfileModal';
+import AIAssistModal from './components/aiAssist/aiAssist';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
@@ -40,6 +41,7 @@ const AppContent: React.FC = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -58,14 +60,15 @@ const AppContent: React.FC = () => {
       {shouldShowNavbar && (
         <>
           <ToggleButton onClick={toggleSidebar} />
-          <SideNavbar 
-            isOpen={isSidebarOpen} 
-            toggleNavbar={toggleSidebar} 
+          <SideNavbar
+            isOpen={isSidebarOpen}
+            toggleNavbar={toggleSidebar}
             openProfileModal={openProfileModal}
-          />        </>
+          />
+        </>
       )}
       <div className={`content ${isSidebarOpen && shouldShowNavbar ? 'sidebarOpen' : ''}`}>
-      <Routes>
+        <Routes>
           <Route path="today" element={<ProtectedRoute element={<Today />} />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
@@ -76,6 +79,7 @@ const AppContent: React.FC = () => {
         isOpen={isProfileModalOpen}
         onClose={closeProfileModal}
       />
+      <AIAssistModal />
     </div>
   );
 };
