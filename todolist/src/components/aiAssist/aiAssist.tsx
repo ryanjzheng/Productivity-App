@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styles from './aiAssist.module.css';
-import { model } from '../../firebaseConfig'; // Import the Gemini model
+import { model } from '../../firebaseConfig';
 
 interface Task {
     title: string;
@@ -8,14 +8,25 @@ interface Task {
     time?: string;
 }
 
-const AIAssistModal: React.FC = () => {
-    const [isOpen, setIsOpen] = useState(false);
+interface AIAssistModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+}
+
+const AIAssistModal: React.FC<AIAssistModalProps> = ({ isOpen, onClose }) => {
     const [input, setInput] = useState('');
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        if (isOpen && inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, [isOpen]);
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === 'Escape') {
-                setIsOpen(prevState => !prevState);
+                onClose();
             }
         };
 
@@ -24,7 +35,7 @@ const AIAssistModal: React.FC = () => {
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
         };
-    }, []);
+    }, [onClose]);
 
     const extractJsonFromMarkdown = (text: string): string => {
         const jsonMatch = text.match(/```json\n([\s\S]*?)\n```/);
@@ -40,16 +51,11 @@ const AIAssistModal: React.FC = () => {
             Format the response as a JSON array of objects, each with 'title', 'date', and 'time' properties. Use ISO date format (YYYY-MM-DD) for dates and 24-hour format (HH:mm) for times. If date or time is not specified, omit those properties. Do not include any markdown formatting or code block indicators in the response.`;
 
             const result = await model.generateContent(prompt);
-            console.log("result", result);
             const response = result.response;
             const generatedText = response.text();
-            console.log("Generated text:", generatedText);
 
-            // Extract JSON from Markdown if necessary
             const jsonString = extractJsonFromMarkdown(generatedText);
-            console.log("Extracted JSON string:", jsonString);
 
-            // Parse the JSON string
             const tasks: Task[] = JSON.parse(jsonString);
             console.log("Parsed tasks:", tasks);
 
@@ -64,13 +70,13 @@ const AIAssistModal: React.FC = () => {
         }
     };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLInputElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const tasks = await processUsingGemini(input);
         console.log('Created tasks:', tasks);
         // Here you would typically update your task management system
         setInput('');
-        setIsOpen(false);
+        onClose();
     };
 
     if (!isOpen) return null;
@@ -81,6 +87,7 @@ const AIAssistModal: React.FC = () => {
                 <h2 className={styles.modalTitle}>AI Assist</h2>
                 <form onSubmit={handleSubmit}>
                     <input
+                        ref={inputRef}
                         type="text"
                         value={input}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}

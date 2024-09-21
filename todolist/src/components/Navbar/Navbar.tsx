@@ -6,9 +6,10 @@ interface SideNavbarProps {
   isOpen: boolean;
   toggleNavbar: () => void;
   openProfileModal: () => void;
+  openAIAssist: () => void;  // New prop for opening AIAssist
 }
 
-const SideNavbar: React.FC<SideNavbarProps> = ({ isOpen, openProfileModal  }) => {
+const SideNavbar: React.FC<SideNavbarProps> = ({ isOpen, openProfileModal, openAIAssist }) => {
   const { currentUser } = useAuth();
 
   const getInitial = () => {
@@ -32,7 +33,6 @@ const SideNavbar: React.FC<SideNavbarProps> = ({ isOpen, openProfileModal  }) =>
     }
   };
 
-
   return (
     <div className={`${styles.sideNavbar} ${isOpen ? styles.open : styles.closed}`}>
       <MDBNavbar expand="lg" light className="flex-column vh-100">
@@ -42,6 +42,12 @@ const SideNavbar: React.FC<SideNavbarProps> = ({ isOpen, openProfileModal  }) =>
               <MDBNavbarLink href="/today" className={styles.navLink}>
                 <MDBIcon fas icon="home" className="me-2" />
                 Today
+              </MDBNavbarLink>
+            </MDBNavbarItem>
+            <MDBNavbarItem className="mb-3">
+              <MDBNavbarLink onClick={openAIAssist} className={styles.navLink}>
+                <MDBIcon fas icon="robot" className="me-2" />
+                AI Assist
               </MDBNavbarLink>
             </MDBNavbarItem>
           </MDBNavbarNav>

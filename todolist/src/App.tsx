@@ -28,6 +28,7 @@ const useShouldShowNavbar = () => {
 const AppContent: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isAIAssistOpen, setIsAIAssistOpen] = useState(false);
   const shouldShowNavbar = useShouldShowNavbar();
 
   useEffect(() => {
@@ -37,10 +38,20 @@ const AppContent: React.FC = () => {
       }
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsAIAssistOpen(prevState => !prevState);
+      }
+    };
 
+    window.addEventListener('resize', handleResize);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -54,6 +65,9 @@ const AppContent: React.FC = () => {
     setIsProfileModalOpen(false);
   };
 
+  const toggleAIAssist = () => {
+    setIsAIAssistOpen(prevState => !prevState);
+  };
 
   return (
     <div>
@@ -64,6 +78,7 @@ const AppContent: React.FC = () => {
             isOpen={isSidebarOpen}
             toggleNavbar={toggleSidebar}
             openProfileModal={openProfileModal}
+            openAIAssist={toggleAIAssist}
           />
         </>
       )}
@@ -79,7 +94,10 @@ const AppContent: React.FC = () => {
         isOpen={isProfileModalOpen}
         onClose={closeProfileModal}
       />
-      <AIAssistModal />
+      <AIAssistModal
+        isOpen={isAIAssistOpen}
+        onClose={toggleAIAssist}
+      />
     </div>
   );
 };
