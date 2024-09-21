@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import nlp from 'compromise';
 import styles from './aiAssist.module.css';
+import { model } from '../../firebaseConfig'; // Import the Gemini model
 
 interface Task {
     title: string;
@@ -26,48 +26,47 @@ const AIAssistModal: React.FC = () => {
         };
     }, []);
 
-    const processInputWithNLP = (input: string): Task[] => {
-        const doc = nlp(input);
-        const tasks: Task[] = [];
-
-        // Look for phrases like "create task for X at Y on Z"
-        doc.match('create task for #Noun+ (at #Time)? (on #Date)?').forEach(match => {
-            const task: Task = {
-                title: match.match('#Noun+').text(),
-                time: match.match('#Time').text(),
-                date: match.match('#Date').text()
-            };
-            tasks.push(task);
-        });
-
-        return tasks;
+    const extractJsonFromMarkdown = (text: string): string => {
+        const jsonMatch = text.match(/```json\n([\s\S]*?)\n```/);
+        return jsonMatch ? jsonMatch[1] : text;
     };
 
-    const processInputWithAI = async (input: string): Promise<Task[]> => {
-        // This is where you'd call your AI service (e.g., OpenAI's GPT-3)
-        // For demonstration, we'll just simulate an AI response
-        console.log('Using AI to process:', input);
+    const processUsingGemini = async (input: string): Promise<Task[]> => {
+        try {
+            const prompt = `Convert the following text into a list of tasks with titles, dates, and times (if specified):
+            
+            ${input}
+            
+            Format the response as a JSON array of objects, each with 'title', 'date', and 'time' properties. Use ISO date format (YYYY-MM-DD) for dates and 24-hour format (HH:mm) for times. If date or time is not specified, omit those properties. Do not include any markdown formatting or code block indicators in the response.`;
 
-        // Simulated AI response - in reality, this would come from the AI service
-        const aiTasks = input.split(',').map(task => ({ title: task.trim() }));
+            const result = await model.generateContent(prompt);
+            console.log("result", result);
+            const response = result.response;
+            const generatedText = response.text();
+            console.log("Generated text:", generatedText);
 
-        return aiTasks;
-    };
+            // Extract JSON from Markdown if necessary
+            const jsonString = extractJsonFromMarkdown(generatedText);
+            console.log("Extracted JSON string:", jsonString);
 
-    const processInput = async (input: string): Promise<Task[]> => {
-        let tasks = processInputWithNLP(input);
+            // Parse the JSON string
+            const tasks: Task[] = JSON.parse(jsonString);
+            console.log("Parsed tasks:", tasks);
 
-        if (tasks.length === 0) {
-            // If NLP didn't find any tasks, use AI
-            tasks = await processInputWithAI(input);
+            return tasks;
+        } catch (error) {
+            console.error('Error processing input with Gemini:', error);
+            if (error instanceof Error) {
+                console.error('Error message:', error.message);
+                console.error('Error stack:', error.stack);
+            }
+            return [];
         }
-
-        return tasks;
     };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLInputElement>) => {
         e.preventDefault();
-        const tasks = await processInput(input);
+        const tasks = await processUsingGemini(input);
         console.log('Created tasks:', tasks);
         // Here you would typically update your task management system
         setInput('');
@@ -94,7 +93,6 @@ const AIAssistModal: React.FC = () => {
                 </form>
             </div>
         </div>
-
     );
 };
 

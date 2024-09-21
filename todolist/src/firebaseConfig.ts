@@ -1,7 +1,8 @@
-// firebaseConfig.ts
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
+import { getVertexAI, getGenerativeModel } from "firebase/vertexai-preview";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBe0Jxaw4xbmVFTZq4sKbAfsdWGFk22_zU",
@@ -14,8 +15,13 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+
+
+const vertexAI = getVertexAI(app);
+const model = getGenerativeModel(vertexAI, { model: "gemini-1.5-flash" });
+
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 const db = getFirestore(app);
 
-export { auth, googleProvider, db };
+export { app, auth, googleProvider, db, model };
