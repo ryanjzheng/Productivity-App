@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styles from './aiAssist.module.css';
 import { model } from '../../firebaseConfig';
+import Tooltip from '../ToolTip/ToolTip';
 
 interface Task {
     title: string;
@@ -84,19 +85,24 @@ const AIAssistModal: React.FC<AIAssistModalProps> = ({ isOpen, onClose }) => {
     return (
         <div className={styles.modalOverlay}>
             <div className={styles.aiAssistModal}>
-                <h2 className={styles.modalTitle}>AI Assist</h2>
+                <div className={styles.header}>
+                    <div className={styles.modalTitle}>AI Assist</div>
+                    <Tooltip message="AI will parse your input and create tasks automatically. Try phrases like 'Buy groceries tomorrow at 3pm' or 'Start project next Monday'." />
+                </div>
                 <form onSubmit={handleSubmit}>
-                    <input
-                        ref={inputRef}
-                        type="text"
-                        value={input}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
-                        placeholder="Enter your task instructions..."
-                        className={styles.inputField}
-                    />
-                    <button type="submit" className={styles.submitButton}>
-                        Submit
-                    </button>
+                    <div className={styles.inputContainer}>
+                        <input
+                            ref={inputRef}
+                            type="text"
+                            value={input}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
+                            placeholder="Enter your task instructions..."
+                            className={styles.inputField}
+                        />
+                        <button type="submit" className={styles.submitButton}>
+                            Submit
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
