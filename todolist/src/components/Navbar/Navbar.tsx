@@ -45,6 +45,12 @@ const SideNavbar: React.FC<SideNavbarProps> = ({ isOpen, openProfileModal, openA
               </MDBNavbarLink>
             </MDBNavbarItem>
             <MDBNavbarItem className="mb-3">
+              <MDBNavbarLink href="/brain-dump" className={styles.navLink}>
+                <MDBIcon fas icon="sticky-note" className="me-2" />
+                Brain dump
+              </MDBNavbarLink>
+            </MDBNavbarItem>
+            <MDBNavbarItem className="mb-3">
               <MDBNavbarLink onClick={openAIAssist} className={styles.navLink}>
                 <MDBIcon fas icon="robot" className="me-2" />
                 AI Assist

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-route
 import Today from './pages/Today/Today';
 import Login from './pages/Login/Login';
 import Signup from './pages/Signup/Signup';
+import BrainDump from './pages/BrainDump/BrainDump';
 import ProtectedRoute from './components/Routing/ProtectedRoute';
 import WildcardRoute from './components/Routing/WildcardRoute';
 import SideNavbar from './components/Navbar/Navbar';
@@ -17,7 +18,10 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+
 import './global.css'
+
 
 const useShouldShowNavbar = () => {
   const location = useLocation();
@@ -85,6 +89,7 @@ const AppContent: React.FC = () => {
       <div className={`content ${isSidebarOpen && shouldShowNavbar ? 'sidebarOpen' : ''}`}>
         <Routes>
           <Route path="today" element={<ProtectedRoute element={<Today />} />} />
+          <Route path="/brain-dump" element={<ProtectedRoute element={<BrainDump />} />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="*" element={<WildcardRoute />} />

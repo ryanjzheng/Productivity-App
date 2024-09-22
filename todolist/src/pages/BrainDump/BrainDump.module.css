@@ -1,0 +1,73 @@
+.brainDumpPage {
+    display: flex;
+    flex-direction: column;
+    padding-top: 64px;
+}
+
+.topSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 32px;
+}
+
+.header {
+    margin-bottom: 24px;
+}
+
+.title {
+    color: var(--text-color);
+    font-size: 30px;
+    font-weight: 500;
+}
+
+.inputContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 800px;
+}
+
+.editorWrapper {
+    border-radius: 16px;
+    margin-bottom: 16px;
+    position: relative;
+    background: var(--secondary-color);
+    box-shadow: 0px 6px 18px 0px rgba(0, 72, 141, 0.12);
+}
+
+.editor {
+    padding: 0 10px;
+    min-height: 200px;
+    line-height: 6px;
+}
+
+.editorToolbar {
+    border: none;
+    border-bottom: 1px solid #ddd;
+    border-radius: 16px 16px 0 0;
+    height: 40px;
+}
+
+.addButton {
+    padding: 10px 20px;
+    font-size: 1em;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    align-self: flex-end;
+}
+
+
+.addButton:hover {
+    background-color: #45a049;
+}
+
+.notesGrid {
+    padding: 64px;
+    display: flex;
+    flex-direction: row;
+    gap: 32px;
+}
