@@ -17,6 +17,8 @@ interface AIAssistModalProps {
 const AIAssistModal: React.FC<AIAssistModalProps> = ({ isOpen, onClose }) => {
     const [input, setInput] = useState('');
     const inputRef = useRef<HTMLInputElement>(null);
+    const modalRef = useRef<HTMLDivElement>(null);
+
 
     useEffect(() => {
         if (isOpen && inputRef.current) {
@@ -31,12 +33,22 @@ const AIAssistModal: React.FC<AIAssistModalProps> = ({ isOpen, onClose }) => {
             }
         };
 
+        const handleClickOutside = (event: MouseEvent) => {
+            if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+                onClose();
+            }
+        };
+
         document.addEventListener('keydown', handleKeyDown);
+        if (isOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
 
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
+            document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [onClose]);
+    }, [onClose, isOpen]);
 
     const extractJsonFromMarkdown = (text: string): string => {
         const jsonMatch = text.match(/```json\n([\s\S]*?)\n```/);
@@ -84,7 +96,7 @@ const AIAssistModal: React.FC<AIAssistModalProps> = ({ isOpen, onClose }) => {
 
     return (
         <div className={styles.modalOverlay}>
-            <div className={styles.aiAssistModal}>
+            <div ref={modalRef} className={styles.aiAssistModal}>
                 <div className={styles.header}>
                     <div className={styles.modalTitle}>AI Assist</div>
                     <Tooltip message="AI will parse your input and create tasks automatically. Try phrases like 'Buy groceries tomorrow at 3pm' or 'Start project next Monday'." />
