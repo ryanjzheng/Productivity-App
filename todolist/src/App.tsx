@@ -11,6 +11,7 @@ import MessageHandler from './components/GlobalMessages/MessageHandler';
 import { MessageProvider } from './context/MessageContext';
 import { AuthProvider } from './context/AuthContext';
 import ProfileModal from './components/ProfileModal/ProfileModal';
+import AIAssistModal from './components/aiAssist/aiAssist';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
@@ -27,6 +28,7 @@ const useShouldShowNavbar = () => {
 const AppContent: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isAIAssistOpen, setIsAIAssistOpen] = useState(false);
   const shouldShowNavbar = useShouldShowNavbar();
 
   useEffect(() => {
@@ -36,8 +38,19 @@ const AppContent: React.FC = () => {
       }
     };
 
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsAIAssistOpen(prevState => !prevState);
+      }
+    };
+
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   const toggleSidebar = () => {
@@ -52,20 +65,25 @@ const AppContent: React.FC = () => {
     setIsProfileModalOpen(false);
   };
 
+  const toggleAIAssist = () => {
+    setIsAIAssistOpen(prevState => !prevState);
+  };
 
   return (
     <div>
       {shouldShowNavbar && (
         <>
           <ToggleButton onClick={toggleSidebar} />
-          <SideNavbar 
-            isOpen={isSidebarOpen} 
-            toggleNavbar={toggleSidebar} 
+          <SideNavbar
+            isOpen={isSidebarOpen}
+            toggleNavbar={toggleSidebar}
             openProfileModal={openProfileModal}
-          />        </>
+            openAIAssist={toggleAIAssist}
+          />
+        </>
       )}
       <div className={`content ${isSidebarOpen && shouldShowNavbar ? 'sidebarOpen' : ''}`}>
-      <Routes>
+        <Routes>
           <Route path="today" element={<ProtectedRoute element={<Today />} />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
@@ -75,6 +93,10 @@ const AppContent: React.FC = () => {
       <ProfileModal
         isOpen={isProfileModalOpen}
         onClose={closeProfileModal}
+      />
+      <AIAssistModal
+        isOpen={isAIAssistOpen}
+        onClose={toggleAIAssist}
       />
     </div>
   );

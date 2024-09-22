@@ -1,0 +1,96 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    backdrop-filter: blur(2px);
+}
+
+.aiAssistModal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--secondary-color);
+    border-radius: 48px;
+    padding: 24px;
+    width: 90%;
+    max-width: 600px;
+    height: 125px;
+    box-shadow: 0px 6px 18px 0px rgba(0, 72, 141, 0.12);
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding-left: 8px;
+    padding-bottom: 4px;
+}
+
+.modalTitle {
+    font-size: 17px;
+}
+
+
+.inputContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.inputField {
+    width: 100%;
+    padding: 12px;
+    padding-right: 100px; /* Make room for the button */
+    outline: none;
+    border: none;    border-radius: 16px;
+    font-size: 16px;
+}
+
+.submitButton {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: var(--ascent-color);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submitButton:hover {
+    background-color: var(--primary-color-dark);
+}
+
+@media (max-width: 480px) {
+    .aiAssistModal {
+        width: 95%;
+        padding: 16px;
+    }
+
+    .modalTitle {
+        font-size: 20px;
+    }
+
+    .inputField,
+    .submitButton {
+        font-size: 14px;
+    }
+
+    .submitButton {
+        padding: 6px 12px;
+    }
+}
