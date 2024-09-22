@@ -17,11 +17,19 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-initializeAppCheck(app, {
-    provider: new ReCaptchaV3Provider('6Le8mUoqAAAAACqb_jjkHsyAVjjMl0vReRtVZwaO'),
 
-    isTokenAutoRefreshEnabled: true
-});
+
+if (process.env.NODE_ENV === 'development') {
+    initializeAppCheck(app, {
+        provider: new ReCaptchaV3Provider('6Le8mUoqAAAAACqb_jjkHsyAVjjMl0vReRtVZwaO'),
+        isTokenAutoRefreshEnabled: true
+    });
+} else {
+    initializeAppCheck(app, {
+        provider: new ReCaptchaV3Provider('6Lcc4ksqAAAAAAXR1FnDT4vZS2v9M8eTXcpUYpg3'),
+        isTokenAutoRefreshEnabled: true
+    });
+}
 
 
 
