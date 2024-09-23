@@ -38,7 +38,7 @@ const BrainDump: React.FC = () => {
 
     const generateTitle = async (content: string): Promise<string> => {
         try {
-            const prompt = `Generate one short, concise title max of 7 words, for the following note content:\n${content}. 
+            const prompt = `Generate one short, concise title max of 9 words, for the following note content:\n${content}. 
                             If you can't come up with anything of substance, return -1`;
             const result = await model.generateContent(prompt);
             return result.response.text().trim();
@@ -55,7 +55,14 @@ const BrainDump: React.FC = () => {
         const rawContent = JSON.stringify(convertToRaw(contentState));
         const plainText = contentState.getPlainText();
 
-        const generatedTitle = await generateTitle(plainText);
+        let generatedTitle = await generateTitle(plainText);
+
+        if (generatedTitle === "-1") {
+            const now = new Date();
+            const date = now.toLocaleDateString();
+            const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            generatedTitle = `New Task: ${date} ${time}`;
+        }
 
         const newNoteObject = {
             title: generatedTitle,

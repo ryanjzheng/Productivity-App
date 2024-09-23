@@ -28,7 +28,7 @@ const NoteCard: React.FC<NoteCardProps> = ({ note }) => {
     return (
         <div className={styles.noteCard} onClick={handleClick}>
             <h3 className={styles.noteTitle}>{note.title}</h3>
-            <p className={styles.noteTimestamp}>{getTimeAgo(note.timestamp)}</p>
+            <div className={styles.noteTimestamp}>{getTimeAgo(note.timestamp)}</div>
         </div>
     );
 };
