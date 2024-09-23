@@ -15,7 +15,7 @@ const Tooltip: React.FC<TooltipProps> = ({ message }) => {
         onMouseEnter={() => setIsVisible(true)}
         onMouseLeave={() => setIsVisible(false)}
       >
-        i
+      ?
       </button>
       {isVisible && (
         <div className={styles.tooltipContent}>

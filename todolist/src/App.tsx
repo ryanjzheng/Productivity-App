@@ -5,6 +5,7 @@ import Login from './pages/Login/Login';
 import Signup from './pages/Signup/Signup';
 import BrainDump from './pages/BrainDump/BrainDump';
 import NotePage from './pages/BrainDump/NotePage';
+import ViewAllNotes from './pages/AllNotes/ViewAllNotes';
 import ProtectedRoute from './components/Routing/ProtectedRoute';
 import WildcardRoute from './components/Routing/WildcardRoute';
 import SideNavbar from './components/Navbar/Navbar';
@@ -91,6 +92,7 @@ const AppContent: React.FC = () => {
           <Route path="today" element={<ProtectedRoute element={<Today />} />} />
           <Route path="/brain-dump" element={<ProtectedRoute element={<BrainDump />} />} />
           <Route path="/brain-dump/:id" element={<ProtectedRoute element={<NotePage />} />} />
+          <Route path="/brain-dump/view-all" element={<ProtectedRoute element={<ViewAllNotes />} />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="*" element={<WildcardRoute />} />

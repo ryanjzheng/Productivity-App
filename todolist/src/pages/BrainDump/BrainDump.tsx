@@ -9,6 +9,7 @@ import { useMessage } from '../../context/MessageContext';
 import styles from './BrainDump.module.css';
 import NoteCard from '../../components/NoteCard/NoteCard';
 import { model } from '../../firebaseConfig';
+import Tooltip from '../../components/ToolTip/ToolTip';
 
 
 const BrainDump: React.FC = () => {
@@ -86,6 +87,9 @@ const BrainDump: React.FC = () => {
             <div className={styles.topSection}>
                 <div className={styles.header}>
                     <div className={styles.title}>Brain Dump</div>
+                    <Tooltip message="This is supposed to be very fast. Imagine you're about to board the subway and you just thought of something you wanted to
+                                        write down. Quickly jot something down and we will automatically make the title for you." />
+
                 </div>
                 <div className={styles.inputContainer}>
                     <div className={styles.editorWrapper}>
@@ -119,7 +123,7 @@ const BrainDump: React.FC = () => {
             </div>
 
             <div className={styles.notesGridContainer}>
-                <Link to="/all-notes" className={styles.viewAllLink}>View All</Link>
+                <Link to="/brain-dump/view-all" className={styles.viewAllLink}>View All</Link>
                 <div className={styles.notesGrid}>
                     {notes.slice(0, 6).map((note) => (
                         <NoteCard key={note.id} note={note} />

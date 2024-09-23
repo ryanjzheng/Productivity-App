@@ -5,7 +5,7 @@ import { Editor } from 'react-draft-wysiwyg';
 import { useFirebaseOperations, Note } from '../../hooks/FirebaseOperations';
 import { useAuth } from '../../context/AuthContext';
 import { useMessage } from '../../context/MessageContext';
-import styles from './NotePage.module.css'; 
+import styles from './NotePage.module.css';
 
 const NotePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -14,7 +14,7 @@ const NotePage: React.FC = () => {
   const [title, setTitle] = useState('');
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const { currentUser } = useAuth();
-  const { fetchNote, updateNote, deleteNote } = useFirebaseOperations();
+  const { fetchNote, updateNote } = useFirebaseOperations();
   const { addMessage } = useMessage();
 
   useEffect(() => {
@@ -61,17 +61,6 @@ const NotePage: React.FC = () => {
     }
   };
 
-  const handleDelete = async () => {
-    if (!currentUser || !note || !note.id) return;
-    try {
-      await deleteNote(currentUser.uid, note.id);
-      addMessage('Note deleted successfully');
-      navigate('/brain-dump');
-    } catch (error) {
-      console.error("Error deleting note: ", error);
-      addMessage('Failed to delete note. Please try again.');
-    }
-  };
 
   if (!note) return <div>Loading...</div>;
 
@@ -84,33 +73,34 @@ const NotePage: React.FC = () => {
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Note Title"
       />
-      <Editor
-        editorState={editorState}
-        onEditorStateChange={setEditorState}
-        wrapperClassName={styles.editorWrapper}
-        editorClassName={styles.editor}
-        toolbarClassName={styles.editorToolbar}
-        toolbar={{
-          options: ['inline', 'list', 'textAlign', 'history'],
-          inline: {
-            inDropdown: false,
-            options: ['bold', 'italic', 'underline', 'strikethrough'],
-          },
-          list: {
-            inDropdown: false,
-            options: ['ordered', 'unordered'],
-          },
-          textAlign: {
-            inDropdown: false,
-            options: ['left', 'center', 'right'],
-          },
-          indent: { inDropdown: false },
-          history: { inDropdown: false },
-        }}
-      />
-      <div className={styles.buttonContainer}>
-        <button className={styles.saveButton} onClick={handleSave}>Save</button>
-        <button className={styles.deleteButton} onClick={handleDelete}>Delete</button>
+      <div className={styles.inputContainer}>
+        <div className={styles.editorWrapper}>
+          <Editor
+            editorState={editorState}
+            onEditorStateChange={setEditorState}
+            wrapperClassName={styles.editorWrapper}
+            editorClassName={styles.editor}
+            toolbarClassName={styles.editorToolbar}
+            toolbar={{
+              options: ['inline', 'list', 'textAlign', 'history'],
+              inline: {
+                inDropdown: false,
+                options: ['bold', 'italic', 'underline', 'strikethrough'],
+              },
+              list: {
+                inDropdown: false,
+                options: ['ordered', 'unordered'],
+              },
+              textAlign: {
+                inDropdown: false,
+                options: ['left', 'center', 'right'],
+              },
+              indent: { inDropdown: false },
+              history: { inDropdown: false },
+            }}
+          />
+          <button className={styles.addButton} onClick={handleSave}>Enter</button>
+        </div>
       </div>
     </div>
   );
