@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, getDoc, addDoc, updateDoc, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 
 export interface Todo {
@@ -101,6 +101,20 @@ export const useFirebaseOperations = () => {
     }
   }, []);
 
+  const fetchNote = useCallback(async (userId: string, noteId: string): Promise<Note | null> => {
+    try {
+      const noteDocRef = doc(db, 'users', userId, 'brainDump', noteId);
+      const noteDoc = await getDoc(noteDocRef);
+      if (noteDoc.exists()) {
+        return { id: noteDoc.id, ...noteDoc.data() } as Note;
+      }
+      return null;
+    } catch (err) {
+      setError('Failed to fetch note');
+      throw err;
+    }
+  }, []);
+
   const addNote = useCallback(async (userId: string, note: Note): Promise<Note> => {
     try {
       const userNotesRef = collection(db, 'users', userId, 'brainDump');
@@ -148,6 +162,7 @@ export const useFirebaseOperations = () => {
     deleteTask,
     error,
     fetchNotes,
+    fetchNote,
     addNote,
     updateNote,
     deleteNote,

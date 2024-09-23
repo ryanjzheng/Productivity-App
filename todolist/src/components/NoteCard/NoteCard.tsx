@@ -1,5 +1,6 @@
 import React from 'react';
 import { Note } from '../../hooks/FirebaseOperations';
+import { useNavigate } from 'react-router-dom';
 import styles from './NoteCard.module.css';
 
 interface NoteCardProps {
@@ -7,6 +8,8 @@ interface NoteCardProps {
 }
 
 const NoteCard: React.FC<NoteCardProps> = ({ note }) => {
+    const navigate = useNavigate();
+
     const getTimeAgo = (timestamp: number) => {
         const seconds = Math.floor((Date.now() - timestamp) / 1000);
         if (seconds < 60) return `${seconds} seconds ago`;
@@ -18,9 +21,12 @@ const NoteCard: React.FC<NoteCardProps> = ({ note }) => {
         return `${days} days ago`;
     };
     
+    const handleClick = () => {
+        navigate(`/brain-dump/${note.id}`);
+      };
 
     return (
-        <div className={styles.noteCard}>
+        <div className={styles.noteCard} onClick={handleClick}>
             <h3 className={styles.noteTitle}>{note.title}</h3>
             <p className={styles.noteTimestamp}>{getTimeAgo(note.timestamp)}</p>
         </div>

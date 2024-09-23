@@ -4,6 +4,7 @@ import Today from './pages/Today/Today';
 import Login from './pages/Login/Login';
 import Signup from './pages/Signup/Signup';
 import BrainDump from './pages/BrainDump/BrainDump';
+import NotePage from './pages/BrainDump/NotePage';
 import ProtectedRoute from './components/Routing/ProtectedRoute';
 import WildcardRoute from './components/Routing/WildcardRoute';
 import SideNavbar from './components/Navbar/Navbar';
@@ -19,7 +20,6 @@ import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-
 import './global.css'
 
 
@@ -90,6 +90,7 @@ const AppContent: React.FC = () => {
         <Routes>
           <Route path="today" element={<ProtectedRoute element={<Today />} />} />
           <Route path="/brain-dump" element={<ProtectedRoute element={<BrainDump />} />} />
+          <Route path="/brain-dump/:id" element={<ProtectedRoute element={<NotePage />} />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="*" element={<WildcardRoute />} />
