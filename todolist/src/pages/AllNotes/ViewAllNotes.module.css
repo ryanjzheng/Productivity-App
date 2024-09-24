@@ -39,6 +39,7 @@
 }
 
 .noteRect {
+  position: relative;
   background-color: var(--secondary-color);
   border-radius: 8px;
   padding: 12px;
@@ -67,4 +68,23 @@
   color: #666;
   display: flex;
   justify-content: space-between;
+}
+
+.deleteIcon {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  cursor: pointer;
+  color: #666;
+  font-size: 12px;
+}
+
+.noteRect:hover .deleteIcon {
+  opacity: 1;
+}
+
+.deleteIcon:hover {
+  color: var(--ascent-color);
 }

@@ -14,7 +14,7 @@
 }
 
 .noteCard:hover {
-    transform: scale(1.05);
+    transform: translateY(-2px);
 }
 
 .noteTitle {
@@ -24,7 +24,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     /* white-space: nowrap; */
-
 }
 
 .noteTimestamp {

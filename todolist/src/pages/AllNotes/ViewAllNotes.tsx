@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useFirebaseOperations, Note } from '../../hooks/FirebaseOperations';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import styles from './ViewAllNotes.module.css';
 
 interface GroupedNotes {
@@ -16,7 +18,7 @@ const ViewAllNotes: React.FC = () => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const { currentUser } = useAuth();
-  const { fetchNotes } = useFirebaseOperations();
+  const { fetchNotes, deleteNote } = useFirebaseOperations();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -88,6 +90,18 @@ const ViewAllNotes: React.FC = () => {
     return `${days} days ago`;
   };
 
+  const handleDeleteNote = async (event: React.MouseEvent, noteId: string) => {
+    event.stopPropagation();
+    if (!currentUser || !noteId) return;
+
+    try {
+      await deleteNote(currentUser.uid, noteId);
+      setNotes(prevNotes => prevNotes.filter(note => note.id !== noteId));
+    } catch (error) {
+      console.error("Error deleting note: ", error);
+    }
+  };
+
   const handleNoteClick = (noteId: string) => {
     navigate(`/brain-dump/${noteId}`);
   };
@@ -104,12 +118,12 @@ const ViewAllNotes: React.FC = () => {
           className={styles.searchBar}
         />
       </div>
-      
+
       {Object.entries(groupedNotes).map(([groupTitle, notes]) => (
         groupTitle !== 'Older' ? (
           <div key={groupTitle} className={styles.noteGroup}>
             <h2>{groupTitle}</h2>
-            {notes.map(note => (
+            {(notes as Note[]).map(note => (
               <div
                 key={note.id}
                 className={styles.noteRect}
@@ -120,6 +134,11 @@ const ViewAllNotes: React.FC = () => {
                   <span>{getTimeAgo(note.timestamp)}</span>
                   <span>{formatDate(note.timestamp)}</span>
                 </div>
+                <FontAwesomeIcon
+                  icon={faTrash}
+                  className={styles.deleteIcon}
+                  onClick={(e) => handleDeleteNote(e, note.id!)}
+                />
               </div>
             ))}
           </div>
