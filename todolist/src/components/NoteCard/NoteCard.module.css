@@ -1,0 +1,33 @@
+
+.noteCard {
+    background-color: var(--secondary-color);
+    border-radius: 16px;
+    padding: 24px 20px 12px 20px;
+    box-shadow: 0px 6px 18px 0px rgba(0, 72, 141, 0.12);
+    display: flex;
+    flex-direction: column;
+    width: 250px;
+    height: 150px;
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.noteCard:hover {
+    transform: translateY(-2px);
+}
+
+.noteTitle {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* white-space: nowrap; */
+}
+
+.noteTimestamp {
+    font-size: 12px;
+    color: #666;
+    margin-top: auto;
+}

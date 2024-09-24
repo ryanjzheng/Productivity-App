@@ -53,7 +53,7 @@ const Today: React.FC = () => {
     };
 
     updateGreeting();
-    const intervalId = setInterval(updateGreeting, 60000); // Update every minute
+    const intervalId = setInterval(updateGreeting, 60000);
 
     return () => clearInterval(intervalId);
   }, []);
