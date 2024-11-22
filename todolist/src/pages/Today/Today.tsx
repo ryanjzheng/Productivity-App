@@ -5,6 +5,7 @@ import { useMessage } from '../../context/MessageContext';
 import AddTaskButton from '../../components/AddTaskButton/AddTaskButton';
 import { handleNotifications, requestNotificationPermission, clearNotification } from '../../utils/notificationScheduler';
 import { getFirstName } from '../../utils/generalUtils';
+import Tooltip from '../../components/ToolTip/ToolTip';
 import Task from './Task';
 import styles from './Today.module.css';
 
@@ -150,6 +151,11 @@ const Today: React.FC = () => {
       <div className={styles.todayHeader}>
         <div className={styles.title}>
           {greeting}{currentUser?.displayName ? `, ${getFirstName(currentUser.displayName)}` : ''}
+          <span style={{ position: 'relative', top: '-13px', marginLeft: '4px' }}>
+            <Tooltip message='Try typing "Get laundry in 40 min". We use NLP to determine the date and time. 
+              Also click on the calendar icon to manually set the date and time.
+              Try pushing the limits with: "Buy groceries in 2 days at 3 in the afternoon".' />
+          </span>
         </div>
       </div>
 

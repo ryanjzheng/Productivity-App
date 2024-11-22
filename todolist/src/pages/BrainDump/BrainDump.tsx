@@ -89,7 +89,6 @@ const BrainDump: React.FC = () => {
                     <div className={styles.title}>Brain Dump</div>
                     <Tooltip message="This is supposed to be very fast. Imagine you're about to board the subway and you just thought of something you wanted to
                                         write down. Quickly jot something down and we will automatically make the title for you." />
-
                 </div>
                 <div className={styles.inputContainer}>
                     <div className={styles.editorWrapper}>

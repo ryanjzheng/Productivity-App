@@ -11,6 +11,7 @@ import { createUserWithEmailAndPassword, signInWithPopup, updateProfile } from "
 import { FirebaseError } from 'firebase/app';
 import { db } from '../../firebaseConfig';
 import { doc, setDoc, collection } from 'firebase/firestore';
+import { EditorState, ContentState, convertToRaw } from 'draft-js';
 import EvLogo from '../../assets/evlogo.png';
 import backgroundImage from '../../assets/evbackground.png';
 
@@ -68,6 +69,15 @@ const Signup: React.FC = () => {
         time: now.toTimeString().split(' ')[0].slice(0, 5),
       });
 
+      const userNotesRef = collection(db, 'users', uid, 'brainDump');
+      await setDoc(doc(userNotesRef), {
+        title: 'Welcome to Brain Dump',
+        content: JSON.stringify(convertToRaw(EditorState.createWithContent(ContentState.createFromText(
+          'This is your first brain dump note! Use this space to quickly jot down your thoughts.'
+        )).getCurrentContent())),
+        timestamp: Date.now(),
+      });
+
       console.log('Signed up with email and password:', userCredential);
       navigate('/today');
     } catch (error) {
@@ -101,6 +111,15 @@ const Signup: React.FC = () => {
         order: 0,
         date: now.toISOString().split('T')[0],
         time: now.toTimeString().split(' ')[0].slice(0, 5),
+      });
+
+      const userNotesRef = collection(db, 'users', uid, 'brainDump');
+      await setDoc(doc(userNotesRef), {
+        title: 'Welcome to Brain Dump',
+        content: JSON.stringify(convertToRaw(EditorState.createWithContent(ContentState.createFromText(
+          'This is your first brain dump note! Use this space to quickly jot down your thoughts.'
+        )).getCurrentContent())),
+        timestamp: Date.now(),
       });
 
       console.log('Signed up with Google:', result);
@@ -205,23 +224,23 @@ const Signup: React.FC = () => {
                   <FaGoogle className="me-2" />Continue with Google
                 </MDBBtn>
                 <MDBBtn
-                data-mdb-ripple-init
-                className="btn btn-primary btn-lg btn-block"
-                style={{ backgroundColor: '#3b5998' }}
-                href="#!"
-                role="button"
-              >
-                <FaFacebookF className="me-2" />Continue with Facebook
-              </MDBBtn>
-              <MDBBtn
-                data-mdb-ripple-init
-                className="btn btn-primary btn-lg btn-block"
-                style={{ backgroundColor: '#55acee' }}
-                href="#!"
-                role="button"
-              >
-                <FaTwitter className="me-2" />Continue with Twitter
-              </MDBBtn>
+                  data-mdb-ripple-init
+                  className="btn btn-primary btn-lg btn-block"
+                  style={{ backgroundColor: '#3b5998' }}
+                  href="#!"
+                  role="button"
+                >
+                  <FaFacebookF className="me-2" />Continue with Facebook
+                </MDBBtn>
+                <MDBBtn
+                  data-mdb-ripple-init
+                  className="btn btn-primary btn-lg btn-block"
+                  style={{ backgroundColor: '#55acee' }}
+                  href="#!"
+                  role="button"
+                >
+                  <FaTwitter className="me-2" />Continue with Twitter
+                </MDBBtn>
               </form>
             </div>
           </div>
